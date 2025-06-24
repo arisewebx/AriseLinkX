@@ -98,7 +98,7 @@ const RedirectLink = () => {
               {/* Powered by */}
               <div className="mt-8 pt-6 border-t border-white/10">
                 <p className="text-xs text-gray-400">
-                  Powered by <span className="text-purple-400 font-semibold">LinkFlow</span>
+                  Powered by <span className="text-purple-400 font-semibold">Shortlinktics</span>
                 </p>
               </div>
             </div>
@@ -181,7 +181,7 @@ const RedirectLink = () => {
               {/* Powered by */}
               <div className="mt-6 pt-4 border-t border-white/10">
                 <p className="text-xs text-gray-400">
-                  Redirected by <span className="text-purple-400 font-semibold">LinkFlow</span>
+                  Redirected by <span className="text-purple-400 font-semibold">Shortlinktics</span>
                 </p>
               </div>
             </div>

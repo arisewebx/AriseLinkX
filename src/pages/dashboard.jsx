@@ -110,7 +110,7 @@ const Dashboard = () => {
       ctx.fillStyle = '#8b5cf6'; // Purple color matching your theme
       ctx.font = 'bold 24px Arial, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('LinkFlow', canvas.width / 2, 40);
+      ctx.fillText('Shortlinktics', canvas.width / 2, 40);
       
       // Add subtitle
       ctx.fillStyle = '#6b7280';
@@ -123,7 +123,7 @@ const Dashboard = () => {
       ctx.textAlign = 'center';
       
       // Wrap text if too long
-      const linkTitle = url?.title || 'LinkFlow Short URL';
+      const linkTitle = url?.title || 'Shortlinktics Short URL';
       const maxWidth = canvas.width - 40;
       const words = linkTitle.split(' ');
       let line = '';
@@ -152,14 +152,14 @@ const Dashboard = () => {
       // Add footer
       ctx.fillStyle = '#9ca3af';
       ctx.font = '12px Arial, sans-serif';
-      ctx.fillText('Scan to visit • Powered by LinkFlow', canvas.width / 2, canvas.height - 20);
+      ctx.fillText('Scan to visit • Powered by Shortlinktics', canvas.width / 2, canvas.height - 20);
       
       // Convert to blob and download
       canvas.toBlob((blob) => {
         const blobUrl = window.URL.createObjectURL(blob);
         const anchor = document.createElement('a');
         anchor.href = blobUrl;
-        anchor.download = `${url?.title || 'linkflow'}-qr-code.png`;
+        anchor.download = `${url?.title || 'Shortlinktics'}-qr-code.png`;
         anchor.style.display = 'none';
         
         document.body.appendChild(anchor);
@@ -235,7 +235,7 @@ const Dashboard = () => {
           const firstUrl = sortedUrls[0];
           const link = firstUrl?.custom_url ? firstUrl?.custom_url : firstUrl.short_url;
           const urlToShare = `${window.location.origin}/${link}`;
-          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlToShare)}&quote=${encodeURIComponent(`Check out my ${sortedUrls.length} LinkFlow links! Starting with: ${firstUrl.title}`)}`, '_blank');
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlToShare)}&quote=${encodeURIComponent(`Check out my ${sortedUrls.length} Shortlinktics links! Starting with: ${firstUrl.title}`)}`, '_blank');
         } else {
           // Single link share
           const link = url?.custom_url ? url?.custom_url : url.short_url;
@@ -255,8 +255,8 @@ const Dashboard = () => {
             const link = urlItem?.custom_url ? urlItem?.custom_url : urlItem.short_url;
             return `${urlItem.title}\n${window.location.origin}/${link}\nOriginal: ${urlItem.original_url}`;
           }).join('\n\n---\n\n');
-          const subject = `My ${sortedUrls.length} LinkFlow Links`;
-          const body = `I wanted to share my collection of ${sortedUrls.length} links with you:\n\n${allLinks}\n\nCreated with LinkFlow - Next-Gen URL Shortening`;
+          const subject = `My ${sortedUrls.length} Shortlinktics Links`;
+          const body = `I wanted to share my collection of ${sortedUrls.length} links with you:\n\n${allLinks}\n\nCreated with Shortlinktics - Next-Gen URL Shortening`;
           window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
         } else {
           // Single link share

@@ -129,7 +129,7 @@ const LandingPage = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-cyan-500/10"></div>
             <img
               src="/banner1.jpg"
-              alt="LinkFlow Dashboard"
+              alt="Shortlinktics Dashboard"
               className="w-full h-auto relative z-10"
             />
           </div>
@@ -142,7 +142,7 @@ const LandingPage = () => {
               Frequently Asked Questions
             </h2>
             <p className="text-gray-300 text-lg">
-              Everything you need to know about LinkFlow
+              Everything you need to know about Shortlinktics
             </p>
           </div>
 
@@ -150,27 +150,27 @@ const LandingPage = () => {
             {[
               {
                 id: "item-1",
-                question: "How does the LinkFlow URL shortener work?",
+                question: "How does the Shortlinktics URL shortener work?",
                 answer: "When you enter a long URL, our advanced system generates a shorter, optimized version. This shortened URL redirects to the original long URL when accessed, while providing detailed analytics and tracking capabilities."
               },
               {
                 id: "item-2",
                 question: "Do I need an account to use the app?",
-                answer: "Yes, creating an account unlocks the full power of LinkFlow. You'll be able to manage your URLs, view comprehensive analytics, customize your short URLs, and access advanced features like bulk shortening and team collaboration."
+                answer: "Yes, creating an account unlocks the full power of Shortlinktics. You'll be able to manage your URLs, view comprehensive analytics, customize your short URLs, and access advanced features like bulk shortening and team collaboration."
               },
               {
                 id: "item-3",
                 question: "What analytics are available for my shortened URLs?",
-                answer: "LinkFlow provides comprehensive analytics including click counts, geographic location data, device types (mobile/desktop/tablet), browser information, referrer sources, and time-based click patterns. All data is presented in beautiful, easy-to-understand dashboards."
+                answer: "Shortlinktics provides comprehensive analytics including click counts, geographic location data, device types (mobile/desktop/tablet), browser information, referrer sources, and time-based click patterns. All data is presented in beautiful, easy-to-understand dashboards."
               },
               {
                 id: "item-4",
                 question: "Can I customize my short URLs?",
-                answer: "Absolutely! With LinkFlow, you can create custom branded short URLs that match your brand identity. Choose your own custom domain and create memorable, professional-looking links."
+                answer: "Absolutely! With Shortlinktics, you can create custom branded short URLs that match your brand identity. Choose your own custom domain and create memorable, professional-looking links."
               },
               {
                 id: "item-5",
-                question: "Is LinkFlow secure and reliable?",
+                question: "Is Shortlinktics secure and reliable?",
                 answer: "Security is our top priority. We use enterprise-grade encryption, provide 99.9% uptime guarantee, and ensure all your data is protected. Your links will work reliably around the clock."
               }
             ].map((faq) => (
@@ -200,7 +200,7 @@ const LandingPage = () => {
               Ready to get started?
             </h2>
             <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-              Join thousands of users who trust LinkFlow for their URL shortening needs. 
+              Join thousands of users who trust Shortlinktics for their URL shortening needs. 
               Start creating powerful short links today!
             </p>
             <Button 

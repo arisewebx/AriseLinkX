@@ -34,7 +34,7 @@ const Header = () => {
           </div>
           <div className="hidden sm:block">
             <h1 className="text-2xl font-bold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-cyan-400 group-hover:bg-clip-text transition-all duration-300">
-              LinkFlow
+              Shortlinktics
             </h1>
             <p className="text-xs text-gray-400 -mt-1">Next-Gen Links</p>
           </div>

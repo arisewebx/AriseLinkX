@@ -48,7 +48,7 @@ const LinkPage = () => {
       ctx.fillStyle = '#8b5cf6'; // Purple color matching your theme
       ctx.font = 'bold 24px Arial, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('LinkFlow', canvas.width / 2, 40);
+      ctx.fillText('Shortlinktics', canvas.width / 2, 40);
       
       // Add subtitle
       ctx.fillStyle = '#6b7280';
@@ -61,7 +61,7 @@ const LinkPage = () => {
       ctx.textAlign = 'center';
       
       // Wrap text if too long
-      const linkTitle = url?.title || 'LinkFlow Short URL';
+      const linkTitle = url?.title || 'Shortlinktics Short URL';
       const maxWidth = canvas.width - 40;
       const words = linkTitle.split(' ');
       let line = '';
@@ -89,14 +89,14 @@ const LinkPage = () => {
       // Add footer
       ctx.fillStyle = '#9ca3af';
       ctx.font = '12px Arial, sans-serif';
-      ctx.fillText('Scan to visit • Powered by LinkFlow', canvas.width / 2, canvas.height - 20);
+      ctx.fillText('Scan to visit • Powered by Shortlinktics', canvas.width / 2, canvas.height - 20);
       
       // Convert to blob and download
       canvas.toBlob((blob) => {
         const blobUrl = window.URL.createObjectURL(blob);
         const anchor = document.createElement('a');
         anchor.href = blobUrl;
-        anchor.download = `${url?.title || 'linkflow'}-qr-code.png`;
+        anchor.download = `${url?.title || 'Shortlinktics'}-qr-code.png`;
         anchor.style.display = 'none';
         
         document.body.appendChild(anchor);

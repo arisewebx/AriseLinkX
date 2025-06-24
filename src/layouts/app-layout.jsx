@@ -113,7 +113,7 @@ const AppLayout = () => {
                     <Sparkles className="w-3 h-3 text-white" />
                   </div>
                   <span className="text-gray-400 text-sm">
-                    © 2025 LinkFlow. All rights reserved.
+                    © 2025 Shortlinktics. All rights reserved.
                   </span>
                 </div>
                 

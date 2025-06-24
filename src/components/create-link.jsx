@@ -251,7 +251,7 @@ const CreateLink = () => {
           <div className="bg-white/5 border border-white/10 rounded-lg p-3">
             <h4 className="text-xs font-medium text-white mb-2 flex items-center gap-2">
               <Sparkles className="w-3 h-3 text-purple-400" />
-              LinkFlow Features:
+              Shortlinktics Features:
             </h4>
             <ul className="space-y-1 text-xs text-gray-300">
               <li className="flex items-center gap-2">

@@ -156,7 +156,7 @@ const Settings = () => {
               <div>
                 <h3 className="text-white font-semibold text-lg">{userData.name || 'User'}</h3>
                 <p className="text-gray-300">{userData.email}</p>
-                <p className="text-sm text-gray-400 mt-1">LinkFlow Member</p>
+                <p className="text-sm text-gray-400 mt-1">Shortlinktics Member</p>
               </div>
             </div>
 
@@ -174,7 +174,7 @@ const Settings = () => {
                   placeholder="Enter your display name"
                 />
                 <p className="text-xs text-gray-400 mt-2">
-                  This is the name that will be displayed throughout LinkFlow
+                  This is the name that will be displayed throughout Shortlinktics
                 </p>
               </div>
 

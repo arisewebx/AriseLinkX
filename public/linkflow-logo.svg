@@ -6,7 +6,7 @@
                 <circle cx="-8" cy="8" r="1" fill="white" />
                 <path d="M-8 -8L-6 -6L-8 -4L-10 -6Z" fill="white" />
             </g>
-            <text x="88" y="32" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white">LinkFlow</text>
+            <text x="88" y="32" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white">Shortlinktics</text>
             <text x="88" y="52" font-family="Arial, sans-serif" font-size="14" fill="#9CA3AF">Next-Gen Links</text>
             <defs>
                 <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
