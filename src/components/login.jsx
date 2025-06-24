@@ -199,11 +199,11 @@ const Login = () => {
             </div>
 
             {/* Forgot Password */}
-            <div className="text-right">
+            {/* <div className="text-right">
               <button className="text-sm text-gray-300 hover:text-purple-400 transition-colors duration-200 font-medium">
                 Forgot password?
               </button>
-            </div>
+            </div> */}
           </CardContent>
 
           <CardFooter className="p-8 pt-4">
@@ -230,14 +230,14 @@ const Login = () => {
         </Card>
 
         {/* Bottom CTA */}
-        <div className="text-center mt-8">
+        {/* <div className="text-center mt-8">
           <p className="text-gray-400">
             New here?{" "}
             <button className="text-purple-400 hover:text-purple-300 font-semibold transition-colors duration-200">
               Create your account
             </button>
           </p>
-        </div>
+        </div> */}
 
         {/* Floating Particles */}
         <div className="absolute top-20 left-10 w-2 h-2 bg-purple-400 rounded-full animate-ping"></div>
