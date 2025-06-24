@@ -104,7 +104,6 @@ const LandingPage = () => {
             </div>
           ))}
         </div>
-
         {/* Stats Section */}
         {/* <div className="w-full max-w-4xl mb-20">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
