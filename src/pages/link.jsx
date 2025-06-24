@@ -420,7 +420,7 @@ const LinkPage = () => {
                 </Button>
                 <Button
                   onClick={() => fnDelete().then(() => {
-                    fetchUrls();
+                    // fetchUrls();
                     navigate("/dashboard");
                   })}
                   disabled={loadingDelete}

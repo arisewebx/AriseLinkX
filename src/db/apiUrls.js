@@ -79,12 +79,46 @@ export async function createUrl({title, longUrl, customUrl, user_id}, qrcode) {
   return data;
 }
 
+// export async function deleteUrl(id) {
+//   const {data, error} = await supabase.from("urls").delete().eq("id", id);
+
+//   if (error) {
+//     console.error(error);
+//     throw new Error("Unable to delete Url");
+//   }
+
+//   return data;
+// }
 export async function deleteUrl(id) {
-  const {data, error} = await supabase.from("urls").delete().eq("id", id);
+  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  
+  if (sessionError || !sessionData.session) {
+    throw new Error("User not authenticated");
+  }
+
+  const user_id = sessionData.session.user.id;
+
+  // Delete related clicks first
+  const { error: clicksError } = await supabase
+    .from("clicks")
+    .delete()
+    .eq("url_id", id);
+
+  if (clicksError) {
+    console.error("Error deleting clicks:", clicksError);
+    throw new Error("Unable to delete related click data");
+  }
+
+  // Now delete the URL
+  const { data, error } = await supabase
+    .from("urls")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", user_id);
 
   if (error) {
-    console.error(error);
-    throw new Error("Unable to delete Url");
+    console.error("Error deleting URL:", error);
+    throw new Error("Unable to delete URL");
   }
 
   return data;

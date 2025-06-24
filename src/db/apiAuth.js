@@ -47,7 +47,7 @@ export async function logout() {
   if(error) throw new Error(error.message)
  
 }
-// Add this to your existing auth API file (where you have login, signup, etc.)
+
 
 export async function updateUser(userData) {
   const { data, error } = await supabase.auth.updateUser({
@@ -66,6 +66,18 @@ export async function updateUserProfile({name}) {
     }
   });
   
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function loginWithGoogle() {
+  const {data, error} = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${window.location.origin}/dashboard`
+    }
+  });
+
   if (error) throw new Error(error.message);
   return data;
 }
