@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { updatePassword } from '@/db/apiAuth';
 import { BeatLoader } from 'react-spinners';
-import { Eye, EyeOff, Lock, CheckCircle, AlertCircle, RefreshCw, ArrowLeft, Mail, ExternalLink } from 'lucide-react';
+import { Eye, EyeOff, Lock, CheckCircle, AlertCircle, RefreshCw, ArrowLeft, Mail } from 'lucide-react';
 import * as Yup from 'yup';
 
-const ProductionReadyReset = () => {
-  const [searchParams] = useSearchParams();
+const UltimateResetPassword = () => {
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -25,76 +23,95 @@ const ProductionReadyReset = () => {
   const [sessionReady, setSessionReady] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const [countdown, setCountdown] = useState(5);
-  const [isLocalhost, setIsLocalhost] = useState(false);
+  const [supabase, setSupabase] = useState(null);
+  const [user, setUser] = useState(null);
 
-  // Check if we're on localhost and handle accordingly
+  // Initialize Supabase and set up auth state listener
   useEffect(() => {
-    const hostname = window.location.hostname;
-    const isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('localhost');
-    setIsLocalhost(isLocal);
+    const initializeAuth = async () => {
+      try {
+        console.log('🔄 Initializing Supabase auth...');
+        
+        // Import Supabase
+        const supabaseModule = await import('@/db/supabase');
+        const supabaseClient = supabaseModule.default || supabaseModule.supabase;
+        setSupabase(supabaseClient);
 
-    if (isLocal) {
-      // On localhost, show instructions to test on live site
-      setError('Password reset must be tested on the live site for security reasons.');
-      setCheckingSession(false);
-      return;
-    }
-
-    // Only proceed with session setup if on production domain
-    initializeSessionForProduction();
-  }, []);
-
-  const initializeSessionForProduction = async () => {
-    try {
-      console.log('🔄 Initializing password reset session...');
-      
-      // Get tokens from URL
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = hashParams.get('access_token') || searchParams.get('access_token');
-      const refreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token');
-      const type = hashParams.get('type') || searchParams.get('type');
-
-      if (!accessToken || type !== 'recovery') {
-        setError('Invalid reset link. Please request a new password reset.');
-        setCheckingSession(false);
-        return;
-      }
-
-      // Import Supabase and establish session
-      const supabaseModule = await import('@/db/supabase');
-      const supabase = supabaseModule.default || supabaseModule.supabase;
-
-      // Set session with tokens
-      const { data, error: sessionError } = await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken || '',
-      });
-
-      if (sessionError) {
-        console.error('Session error:', sessionError);
-        if (sessionError.message?.includes('expired')) {
-          setError('Your reset link has expired. Please request a new password reset.');
-        } else {
-          setError('Invalid reset link. Please request a new password reset.');
+        // Check current session first
+        const { data: { session: currentSession } } = await supabaseClient.auth.getSession();
+        
+        if (currentSession?.user) {
+          console.log('✅ Existing session found:', currentSession.user.email);
+          setUser(currentSession.user);
+          setSessionReady(true);
+          setCheckingSession(false);
+          return;
         }
+
+        console.log('🔍 No existing session, setting up auth listener...');
+
+        // Set up auth state change listener to catch the session automatically
+        const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
+          console.log('🔔 Auth state change:', event, session?.user?.email);
+          
+          if (event === 'SIGNED_IN' && session?.user) {
+            console.log('✅ User signed in via auth state change:', session.user.email);
+            setUser(session.user);
+            setSessionReady(true);
+            setCheckingSession(false);
+            setError(''); // Clear any existing errors
+          } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+            console.log('✅ Token refreshed:', session.user.email);
+            setUser(session.user);
+            setSessionReady(true);
+          } else if (event === 'SIGNED_OUT') {
+            console.log('❌ User signed out');
+            setUser(null);
+            setSessionReady(false);
+          }
+        });
+
+        // Check if we have URL params and trigger auth automatically
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const searchParams = new URLSearchParams(window.location.search);
+        
+        const accessToken = hashParams.get('access_token') || searchParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token');
+        const type = hashParams.get('type') || searchParams.get('type');
+
+        if (!accessToken || type !== 'recovery') {
+          console.log('❌ No valid reset tokens found');
+          setError('Invalid reset link. Please request a new password reset.');
+          setCheckingSession(false);
+          return;
+        }
+
+        console.log('🔑 Valid tokens found, triggering auth...');
+
+        // The presence of the tokens in the URL should automatically trigger Supabase auth
+        // But if it doesn't work after a few seconds, we'll show an error
+        setTimeout(() => {
+          if (!sessionReady && !user) {
+            console.log('⏰ Auth timeout, showing error');
+            setError('Reset link expired or invalid. Please request a new password reset.');
+            setCheckingSession(false);
+          }
+        }, 10000); // 10 second timeout
+
+        // Clean up subscription on unmount
+        return () => {
+          subscription.unsubscribe();
+        };
+
+      } catch (err) {
+        console.error('💥 Auth initialization error:', err);
+        setError('Failed to initialize authentication. Please request a new password reset.');
         setCheckingSession(false);
-        return;
       }
+    };
 
-      if (data?.session?.user) {
-        console.log('✅ Session established for:', data.session.user.email);
-        setSessionReady(true);
-      } else {
-        setError('Unable to establish session. Please request a new password reset.');
-      }
-
-    } catch (err) {
-      console.error('Session initialization error:', err);
-      setError('Failed to initialize reset. Please request a new password reset.');
-    } finally {
-      setCheckingSession(false);
-    }
-  };
+    initializeAuth();
+  }, [sessionReady, user]);
 
   // Countdown for success redirect
   useEffect(() => {
@@ -159,25 +176,32 @@ const ProductionReadyReset = () => {
         return;
       }
 
-      if (!sessionReady) {
-        throw new Error('Session not ready. Please refresh the page and try again.');
+      if (!sessionReady || !user || !supabase) {
+        throw new Error('Authentication session not ready. Please refresh and try again.');
       }
 
-      console.log('🔄 Updating password...');
+      console.log('🔄 Updating password for user:', user.email);
 
-      // Use your existing auth function
-      const { data, error: updateError } = await updatePassword(formData.password);
+      // Use Supabase client directly since we have an authenticated session
+      const { data, error: updateError } = await supabase.auth.updateUser({
+        password: formData.password
+      });
 
       if (updateError) {
-        console.error('Password update error:', updateError);
+        console.error('❌ Password update error:', updateError);
+        
+        if (updateError.message?.includes('session') || updateError.message?.includes('token')) {
+          throw new Error('Your session has expired. Please request a new password reset.');
+        }
+        
         throw new Error(updateError.message || 'Failed to update password');
       }
 
-      console.log('✅ Password updated successfully');
+      console.log('✅ Password updated successfully for:', data.user?.email);
       setSuccess(true);
 
     } catch (err) {
-      console.error('Password update failed:', err);
+      console.error('💥 Password update failed:', err);
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
@@ -188,60 +212,9 @@ const ProductionReadyReset = () => {
     navigate('/login', { state: { showForgotPassword: true } });
   };
 
-  const goToLiveSite = () => {
-    window.open('https://shortlinktics.netlify.app/login', '_blank');
+  const handleRefresh = () => {
+    window.location.reload();
   };
-
-  // Special handling for localhost
-  if (isLocalhost) {
-    return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md border-0 shadow-2xl" style={{backgroundColor: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(20px)'}}>
-          <CardHeader className="text-center pb-8 pt-12">
-            <div className="mx-auto w-20 h-20 mb-6 relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl blur-lg opacity-75"></div>
-              <div className="relative bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl w-full h-full flex items-center justify-center">
-                <AlertCircle className="w-10 h-10 text-white" />
-              </div>
-            </div>
-            <CardTitle className="text-2xl font-bold text-white mb-4">
-              Development Mode Detected
-            </CardTitle>
-            <p className="text-gray-300 mb-6">
-              Password reset must be tested on your live site for security reasons. Supabase tokens are domain-specific and won't work across different domains.
-            </p>
-            
-            <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 mb-6 text-left">
-              <h4 className="text-blue-400 font-medium mb-2">How to test password reset:</h4>
-              <ol className="text-sm text-gray-300 space-y-1">
-                <li>1. Go to your live site</li>
-                <li>2. Click "Forgot Password?"</li>
-                <li>3. Enter your email</li>
-                <li>4. Click the reset link directly</li>
-                <li>5. Update your password</li>
-              </ol>
-            </div>
-
-            <Button
-              onClick={goToLiveSite}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 mb-4"
-            >
-              <ExternalLink className="w-4 h-4" />
-              Test on Live Site
-            </Button>
-
-            <Button
-              onClick={() => navigate('/login')}
-              variant="outline"
-              className="w-full border-gray-600 text-gray-300 hover:bg-gray-800 py-2 rounded-lg transition-colors"
-            >
-              Back to Login
-            </Button>
-          </CardHeader>
-        </Card>
-      </div>
-    );
-  }
 
   // Loading state
   if (checkingSession) {
@@ -256,10 +229,13 @@ const ProductionReadyReset = () => {
               </div>
             </div>
             <CardTitle className="text-2xl font-bold text-white mb-2">
-              Verifying Reset Link
+              Authenticating Reset Link
             </CardTitle>
-            <p className="text-gray-300">
-              Please wait while we validate your password reset request...
+            <p className="text-gray-300 mb-4">
+              Please wait while we securely authenticate your password reset request...
+            </p>
+            <p className="text-gray-400 text-sm">
+              This may take a few moments as we verify your credentials.
             </p>
           </CardHeader>
         </Card>
@@ -321,9 +297,17 @@ const ProductionReadyReset = () => {
           <CardTitle className="text-3xl font-bold text-white mb-2">
             Create New Password
           </CardTitle>
-          <p className="text-gray-300">
-            Enter a strong password for your account
+          <p className="text-gray-300 mb-4">
+            {sessionReady && user ? `Welcome back, ${user.email?.split('@')[0]}!` : 'Enter a strong password for your account'}
           </p>
+          
+          {sessionReady && user && (
+            <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 mb-4">
+              <p className="text-green-400 text-sm">
+                ✅ Authentication successful! You can now update your password.
+              </p>
+            </div>
+          )}
           
           {error && (
             <div className="mt-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
@@ -331,20 +315,29 @@ const ProductionReadyReset = () => {
                 <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <span className="text-red-400 text-sm block mb-3">{error}</span>
-                  <Button
-                    onClick={handleRequestNewLink}
-                    className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg transition-colors text-sm flex items-center gap-2"
-                  >
-                    <Mail className="w-4 h-4" />
-                    Request New Reset Link
-                  </Button>
+                  <div className="flex gap-2 flex-wrap">
+                    <Button
+                      onClick={handleRefresh}
+                      className="bg-orange-600 hover:bg-orange-500 text-white px-3 py-1 rounded text-xs flex items-center gap-1"
+                    >
+                      <RefreshCw className="w-3 h-3" />
+                      Retry
+                    </Button>
+                    <Button
+                      onClick={handleRequestNewLink}
+                      className="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-xs flex items-center gap-1"
+                    >
+                      <Mail className="w-3 h-3" />
+                      New Link
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
           )}
         </CardHeader>
         
-        {sessionReady && (
+        {sessionReady && user && (
           <CardContent className="px-8 pb-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Password Strength Indicator */}
@@ -442,7 +435,7 @@ const ProductionReadyReset = () => {
               {/* Submit Button */}
               <Button
                 type="submit"
-                disabled={loading || !sessionReady}
+                disabled={loading}
                 className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {loading ? (
@@ -477,4 +470,4 @@ const ProductionReadyReset = () => {
   );
 };
 
-export default ProductionReadyReset;
+export default UltimateResetPassword;
