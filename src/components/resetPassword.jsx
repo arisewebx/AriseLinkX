@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { BeatLoader } from 'react-spinners';
-import { Eye, EyeOff, Lock, CheckCircle, AlertCircle, RefreshCw, ArrowLeft, Mail } from 'lucide-react';
+import { Eye, EyeOff, Lock, CheckCircle, AlertCircle, RefreshCw, ArrowLeft, Mail, Info } from 'lucide-react';
 import * as Yup from 'yup';
 
-const BulletproofResetPassword = () => {
-  const [searchParams] = useSearchParams();
+const FinalWorkingReset = () => {
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -24,84 +23,110 @@ const BulletproofResetPassword = () => {
   const [sessionReady, setSessionReady] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const [countdown, setCountdown] = useState(5);
-  const [accessToken, setAccessToken] = useState('');
+  const [debugInfo, setDebugInfo] = useState('');
 
-  // Enhanced session initialization
+  // Enhanced session initialization with proper token handling
   useEffect(() => {
-    const initializeSession = async () => {
+    const initializeResetFlow = async () => {
       try {
-        // Get tokens from URL (supporting both formats)
+        setDebugInfo('🔍 Checking URL parameters...');
+        
+        // Get all possible token sources
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const urlAccessToken = hashParams.get('access_token') || searchParams.get('access_token');
-        const urlRefreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token') || '';
+        const searchParams = new URLSearchParams(window.location.search);
+        
+        const accessToken = hashParams.get('access_token') || searchParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token');
         const type = hashParams.get('type') || searchParams.get('type');
-
-        console.log('🔑 Session initialization:', { 
-          hasAccessToken: !!urlAccessToken,
-          hasRefreshToken: !!urlRefreshToken,
+        const tokenHash = hashParams.get('token_hash');
+        
+        console.log('🔑 Reset flow tokens:', { 
+          hasAccessToken: !!accessToken,
+          hasRefreshToken: !!refreshToken,
+          hasTokenHash: !!tokenHash,
           type,
-          tokenSource: hashParams.get('access_token') ? 'hash' : 'search'
+          urlFragment: window.location.hash,
+          urlSearch: window.location.search
         });
 
-        // Validate required parameters
-        if (!urlAccessToken || type !== 'recovery') {
-          setError('Invalid or missing reset link. Please request a new password reset.');
+        // Validate basic requirements
+        if (!accessToken || type !== 'recovery') {
+          setError('Invalid reset link. Please request a new password reset.');
           setCheckingSession(false);
           return;
         }
 
-        // Store the access token for later use
-        setAccessToken(urlAccessToken);
+        setDebugInfo('✅ Valid reset token found, establishing session...');
 
-        // Import Supabase client
+        // Import Supabase
         const supabaseModule = await import('@/db/supabase');
         const supabase = supabaseModule.default || supabaseModule.supabase;
+
+        // Check if we already have a valid session
+        const { data: { session: existingSession } } = await supabase.auth.getSession();
         
-        // Method 1: Check if session already exists
-        const { data: { session: currentSession } } = await supabase.auth.getSession();
-        
-        if (currentSession?.user) {
-          console.log('✅ Session already established for:', currentSession.user.email);
+        if (existingSession?.user) {
+          console.log('✅ Valid session already exists:', existingSession.user.email);
+          setDebugInfo('✅ Session ready!');
           setSessionReady(true);
           setCheckingSession(false);
           return;
         }
 
-        console.log('🔄 Attempting to establish session...');
+        setDebugInfo('🔄 No existing session, creating new one...');
 
-        // Method 2: Try to set session with tokens
-        try {
-          const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-            access_token: urlAccessToken,
-            refresh_token: urlRefreshToken,
-          });
+        // Try to set session with the tokens
+        const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken || '',
+        });
 
-          if (sessionError) {
-            console.warn('⚠️ setSession failed:', sessionError.message);
-          } else if (sessionData?.session?.user) {
-            console.log('✅ Session established via setSession for:', sessionData.session.user.email);
-            setSessionReady(true);
-            setCheckingSession(false);
-            return;
+        if (sessionError) {
+          console.error('❌ Session error:', sessionError);
+          setDebugInfo(`❌ Session error: ${sessionError.message}`);
+          
+          // Check if it's a token validation error
+          if (sessionError.message?.includes('invalid') || sessionError.message?.includes('expired')) {
+            setError('Your reset link has expired or is invalid. Please request a new password reset.');
+          } else {
+            setError('Unable to establish secure session. Please request a new password reset.');
           }
-        } catch (sessionErr) {
-          console.warn('⚠️ setSession threw error:', sessionErr.message);
+          setCheckingSession(false);
+          return;
         }
 
-        // Method 3: Direct password update approach (bypass session)
-        console.log('🔄 Session establishment failed, will use direct token approach');
-        setSessionReady(true); // Allow form to show
-        setCheckingSession(false);
+        // Verify session was created successfully
+        if (sessionData?.session?.user) {
+          console.log('✅ Session established successfully:', sessionData.session.user.email);
+          setDebugInfo('✅ Session established successfully!');
+          setSessionReady(true);
+        } else {
+          console.warn('⚠️ Session data returned but no user found');
+          setDebugInfo('⚠️ Session incomplete, trying alternative method...');
+          
+          // Try alternative: Refresh session
+          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+          
+          if (refreshError || !refreshData?.session?.user) {
+            setError('Unable to establish secure session. Please request a new password reset.');
+          } else {
+            console.log('✅ Session established via refresh:', refreshData.session.user.email);
+            setDebugInfo('✅ Session established via refresh!');
+            setSessionReady(true);
+          }
+        }
 
       } catch (err) {
-        console.error('💥 Session initialization error:', err);
-        setError('Unable to process reset link. Please request a new password reset.');
+        console.error('💥 Reset flow initialization error:', err);
+        setDebugInfo(`💥 Error: ${err.message}`);
+        setError('Failed to initialize password reset. Please request a new reset link.');
+      } finally {
         setCheckingSession(false);
       }
     };
 
-    initializeSession();
-  }, [searchParams]);
+    initializeResetFlow();
+  }, []);
 
   // Countdown for success redirect
   useEffect(() => {
@@ -120,7 +145,6 @@ const BulletproofResetPassword = () => {
       [name]: value
     }));
     
-    // Clear field-specific errors on input
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -153,39 +177,6 @@ const BulletproofResetPassword = () => {
     }
   };
 
-  // Direct password update using Supabase REST API
-  const updatePasswordDirect = async (newPassword, token) => {
-    try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
-
-      console.log('🔄 Attempting direct password update...');
-
-      const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-          'apikey': supabaseKey
-        },
-        body: JSON.stringify({
-          password: newPassword
-        })
-      });
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        throw new Error(responseData.message || `API Error: ${response.status}`);
-      }
-
-      return { data: responseData, error: null };
-    } catch (error) {
-      console.error('💥 Direct password update failed:', error);
-      return { data: null, error };
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -200,44 +191,58 @@ const BulletproofResetPassword = () => {
         return;
       }
 
-      if (!sessionReady || !accessToken) {
+      if (!sessionReady) {
         throw new Error('Session not ready. Please refresh the page and try again.');
       }
 
-      console.log('🔄 Starting password update process...');
+      console.log('🔄 Starting password update...');
+      setDebugInfo('🔄 Updating password...');
 
-      // Method 1: Try using existing auth function first
-      try {
-        const { updatePassword } = await import('@/db/apiAuth');
-        const { data, error: updateError } = await updatePassword(formData.password);
+      // Use your existing auth function which should work with the established session
+      const { updatePassword } = await import('@/db/apiAuth');
+      const { data, error: updateError } = await updatePassword(formData.password);
 
-        if (!updateError && data) {
-          console.log('✅ Password updated successfully via auth function');
+      if (updateError) {
+        console.error('❌ Password update error:', updateError);
+        setDebugInfo(`❌ Update error: ${updateError.message}`);
+        
+        if (updateError.message?.includes('session') || updateError.message?.includes('logged in')) {
+          // Try to refresh session and retry
+          console.log('🔄 Attempting session refresh and retry...');
+          setDebugInfo('🔄 Refreshing session and retrying...');
+          
+          const supabaseModule = await import('@/db/supabase');
+          const supabase = supabaseModule.default || supabaseModule.supabase;
+          
+          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+          
+          if (refreshError) {
+            throw new Error('Session expired. Please request a new password reset.');
+          }
+          
+          // Retry password update
+          const { data: retryData, error: retryError } = await updatePassword(formData.password);
+          
+          if (retryError) {
+            throw new Error(retryError.message || 'Failed to update password after session refresh');
+          }
+          
+          console.log('✅ Password updated successfully after retry');
+          setDebugInfo('✅ Password updated successfully!');
           setSuccess(true);
           return;
         }
-
-        console.warn('⚠️ Auth function failed:', updateError?.message);
-      } catch (authErr) {
-        console.warn('⚠️ Auth function not available or failed:', authErr.message);
+        
+        throw new Error(updateError.message || 'Failed to update password');
       }
 
-      // Method 2: Fallback to direct API call
-      console.log('🔄 Falling back to direct API call...');
-      const { data: directData, error: directError } = await updatePasswordDirect(formData.password, accessToken);
-
-      if (directError) {
-        if (directError.message?.includes('expired') || directError.message?.includes('invalid')) {
-          throw new Error('Reset link has expired. Please request a new password reset.');
-        }
-        throw new Error(directError.message || 'Failed to update password');
-      }
-
-      console.log('✅ Password updated successfully via direct API');
+      console.log('✅ Password updated successfully');
+      setDebugInfo('✅ Password updated successfully!');
       setSuccess(true);
 
     } catch (err) {
       console.error('💥 Password update failed:', err);
+      setDebugInfo(`💥 Failed: ${err.message}`);
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
@@ -263,9 +268,20 @@ const BulletproofResetPassword = () => {
             <CardTitle className="text-2xl font-bold text-white mb-2">
               Verifying Reset Link
             </CardTitle>
-            <p className="text-gray-300">
+            <p className="text-gray-300 mb-4">
               Please wait while we validate your password reset request...
             </p>
+            
+            {/* Debug Information */}
+            {debugInfo && (
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <Info className="w-4 h-4 text-blue-400" />
+                  <span className="text-blue-400 text-sm font-medium">Status</span>
+                </div>
+                <p className="text-blue-200 text-xs">{debugInfo}</p>
+              </div>
+            )}
           </CardHeader>
         </Card>
       </div>
@@ -327,8 +343,19 @@ const BulletproofResetPassword = () => {
             Create New Password
           </CardTitle>
           <p className="text-gray-300">
-            {sessionReady ? 'Enter a strong password for your account' : 'Preparing secure session...'}
+            Enter a strong password for your account
           </p>
+          
+          {/* Debug Status */}
+          {debugInfo && (
+            <div className="mt-4 bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-1">
+                <Info className="w-4 h-4 text-blue-400" />
+                <span className="text-blue-400 text-sm font-medium">Status</span>
+              </div>
+              <p className="text-blue-200 text-xs">{debugInfo}</p>
+            </div>
+          )}
           
           {error && (
             <div className="mt-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20">
@@ -402,7 +429,7 @@ const BulletproofResetPassword = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <div className="text-red-400 text-sm flex items-center gap-2 animate-shake">
+                  <div className="text-red-400 text-sm flex items-center gap-2">
                     <AlertCircle className="w-4 h-4" />
                     {errors.password}
                   </div>
@@ -437,7 +464,7 @@ const BulletproofResetPassword = () => {
                   </button>
                 </div>
                 {errors.confirmPassword && (
-                  <div className="text-red-400 text-sm flex items-center gap-2 animate-shake">
+                  <div className="text-red-400 text-sm flex items-center gap-2">
                     <AlertCircle className="w-4 h-4" />
                     {errors.confirmPassword}
                   </div>
@@ -482,4 +509,4 @@ const BulletproofResetPassword = () => {
   );
 };
 
-export default BulletproofResetPassword;
+export default FinalWorkingReset;
