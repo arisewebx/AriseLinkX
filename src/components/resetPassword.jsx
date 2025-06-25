@@ -88,6 +88,8 @@ const FinalWorkingSolution = () => {
           const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
           const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 
+          console.log('🌐 Making token verification request...');
+
           const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
             method: 'GET',
             headers: {
@@ -96,25 +98,35 @@ const FinalWorkingSolution = () => {
             }
           });
 
+          console.log('📡 Token verification response:', userResponse.status);
+
           if (userResponse.ok) {
             const userData = await userResponse.json();
             console.log('✅ Token verification successful:', userData.email);
             
-            // Create a fake session object for our use
+            // Create a user object for our use
             setUser({
               id: userData.id,
               email: userData.email,
-              user_metadata: userData.user_metadata,
+              user_metadata: userData.user_metadata || {},
               accessToken: accessToken // Store token for password update
             });
             setSessionReady(true);
             setCheckingSession(false);
             return;
+          } else {
+            const errorData = await userResponse.json();
+            console.log('❌ Token verification failed:', userResponse.status, errorData);
+            
+            if (userResponse.status === 401 || userResponse.status === 403) {
+              throw new Error('Reset link has expired or is invalid');
+            } else {
+              throw new Error(`Token verification failed: ${userResponse.status}`);
+            }
           }
-
-          console.log('❌ Token verification failed:', userResponse.status);
         } catch (verifyError) {
           console.log('❌ Token verification error:', verifyError.message);
+          throw verifyError;
         }
 
         // If all methods fail
