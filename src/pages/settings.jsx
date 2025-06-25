@@ -195,7 +195,7 @@ const Settings = () => {
             {/* Username Update Form */}
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-300 mb-3 block flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-300 mb-3 block items-center gap-2">
                   <Edit3 className="w-4 h-4" />
                   Display Name
                 </label>
