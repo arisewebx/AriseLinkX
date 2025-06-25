@@ -10,14 +10,10 @@ import RequireAuth from "./components/require-auth"
 import RedirectLink from "./pages/redirect-link"
 import LinkPage from "./pages/link"
 import Settings from "./pages/settings"
-import ResetPassword from "./components/resetPassword"
+
 
 
 const router = createBrowserRouter([
-  {
-  path: "/reset-password",
-  element: <ResetPassword />
-},
   {
     element: <AppLayout />,
     children: [

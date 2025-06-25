@@ -17,7 +17,7 @@ import {BeatLoader} from "react-spinners";
 import useFetch from "@/hooks/use-fetch";
 import {UrlState} from "@/context";
 import {Eye, EyeOff, Mail, Lock, Sparkles, ArrowRight} from "lucide-react";
-import ForgotPasswordModal from "./ForgotPasswordModal"; // Import the modal
+// import ForgotPasswordModal from "./ForgotPasswordModal";
 
 const Login = () => {
   let [searchParams] = useSearchParams();
@@ -195,13 +195,13 @@ const Login = () => {
                 Password
               </label>
               {/* Forgot Password Link */}
-              <button
+              {/* <button
                 type="button"
                 onClick={() => setShowForgotModal(true)}
                 className="text-sm text-purple-400 hover:text-purple-300 transition-colors duration-200 font-medium cursor-pointer relative z-10 px-2 py-1 rounded hover:bg-purple-400/10"
               >
                 Forgot Password?
-              </button>
+              </button> */}
             </div>
             <div className="relative group">
               <Input
@@ -258,10 +258,10 @@ const Login = () => {
       </Card>
 
       {/* Forgot Password Modal */}
-      <ForgotPasswordModal 
+      {/* <ForgotPasswordModal 
         isOpen={showForgotModal} 
         onClose={() => setShowForgotModal(false)} 
-      />
+      /> */}
     </>
   );
 };
