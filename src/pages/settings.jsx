@@ -13,6 +13,9 @@ import {
 } from 'lucide-react';
 import { UrlState } from '@/context';
 import supabase from '@/db/supabase';
+import useFetch from '@/hooks/use-fetch';
+import { getUrls } from '@/db/apiUrls';
+import { getClicksForUrls } from '@/db/apiClicks';
 // Optional: import { updateUserProfile } from '@/db/apiAuth';
 
 const Settings = () => {
@@ -20,6 +23,17 @@ const Settings = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch URLs and clicks data
+  const {loading, error, data: urls, fn: fnUrls} = useFetch(getUrls, user?.id);
+  const {
+    loading: loadingClicks,
+    data: clicks,
+    fn: fnClicks,
+  } = useFetch(
+    getClicksForUrls,
+    urls?.map((url) => url.id)
+  );
 
   // Form state for username
   const [userData, setUserData] = useState({
@@ -36,6 +50,24 @@ const Settings = () => {
       });
     }
   }, [user]);
+
+  // Fetch URLs when user is available
+  useEffect(() => {
+    if (user?.id) {
+      fnUrls();
+    }
+  }, [user?.id]);
+
+  // Fetch clicks when URLs are available
+  useEffect(() => {
+    if (urls?.length) {
+      fnClicks();
+    }
+  }, [urls?.length]);
+
+  // Calculate stats
+  const totalClicks = clicks?.length || 0;
+  const totalUrls = urls?.length || 0;
 
   // Show loading if user is not loaded yet
   if (!user) {
@@ -196,15 +228,21 @@ const Settings = () => {
             <div className="grid grid-cols-2 gap-4 p-6 bg-white/5 rounded-xl border border-white/10">
               <div className="text-center">
                 <div className="text-2xl font-bold text-white">
-                  {/* TODO: Replace with actual link count */}
-                  -
+                  {loading ? (
+                    <div className="w-6 h-6 mx-auto border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    totalUrls
+                  )}
                 </div>
                 <div className="text-sm text-gray-400">Links Created</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-white">
-                  {/* TODO: Replace with actual click count */}
-                  -
+                  {loadingClicks ? (
+                    <div className="w-6 h-6 mx-auto border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    totalClicks
+                  )}
                 </div>
                 <div className="text-sm text-gray-400">Total Clicks</div>
               </div>
@@ -234,7 +272,7 @@ const Settings = () => {
         </Card>
 
         {/* Quick Actions */}
-        <Card className="border-0 bg-white/5 backdrop-blur-xl mt-6">
+        {/* <Card className="border-0 bg-white/5 backdrop-blur-xl mt-6">
           <CardHeader>
             <CardTitle className="text-white text-lg">Quick Actions</CardTitle>
           </CardHeader>
@@ -263,7 +301,7 @@ const Settings = () => {
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );

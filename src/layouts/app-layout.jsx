@@ -59,10 +59,17 @@ const AppLayout = () => {
                 <span className="text-gray-300 text-sm">Crafted with</span>
                 <Heart className="w-4 h-4 text-red-400 animate-pulse" />
                 <span className="text-gray-300 text-sm">by</span>
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-white/10">
-                  <Code className="w-4 h-4 text-purple-400" />
-                  <span className="font-semibold text-white">Karthick</span>
-                </div>
+                 <a 
+        href="https://karthickofficial.netlify.app" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="ml-2"
+      >
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-white/10 cursor-pointer hover:from-purple-500/30 hover:to-cyan-500/30 transition-all duration-200 transform hover:scale-105">
+          <Code className="w-4 h-4 text-purple-400" />
+          <span className="font-semibold text-white">Karthick</span>
+        </div>
+      </a>
               </div>
               
               <p className="text-gray-400 text-sm max-w-md mx-auto leading-relaxed">
@@ -73,7 +80,7 @@ const AppLayout = () => {
             {/* Tech Stack */}
             <div className="mb-6">
               <div className="flex flex-wrap justify-center gap-3">
-                {['React', 'Tailwind CSS', 'Lucide Icons', 'Modern UI'].map((tech, index) => (
+                {['React', 'Tailwind CSS', 'Lucide Icons', 'Modern UI','Supabase'].map((tech, index) => (
                   <div 
                     key={tech}
                     className="px-3 py-1 text-xs font-medium text-gray-300 rounded-full border border-white/10"
