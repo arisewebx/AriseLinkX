@@ -7,7 +7,7 @@ import { BeatLoader } from 'react-spinners';
 import { Eye, EyeOff, Lock, CheckCircle, AlertCircle, RefreshCw, ArrowLeft, Mail } from 'lucide-react';
 import * as Yup from 'yup';
 
-const UltimateResetPassword = () => {
+const FinalWorkingSolution = () => {
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -26,52 +26,18 @@ const UltimateResetPassword = () => {
   const [supabase, setSupabase] = useState(null);
   const [user, setUser] = useState(null);
 
-  // Initialize Supabase and set up auth state listener
+  // Manual token processing that works with your setup
   useEffect(() => {
-    const initializeAuth = async () => {
+    const processResetTokens = async () => {
       try {
-        console.log('🔄 Initializing Supabase auth...');
+        console.log('🔄 Processing reset tokens manually...');
         
-        // Import Supabase
+        // Import your supabase client
         const supabaseModule = await import('@/db/supabase');
         const supabaseClient = supabaseModule.default || supabaseModule.supabase;
         setSupabase(supabaseClient);
 
-        // Check current session first
-        const { data: { session: currentSession } } = await supabaseClient.auth.getSession();
-        
-        if (currentSession?.user) {
-          console.log('✅ Existing session found:', currentSession.user.email);
-          setUser(currentSession.user);
-          setSessionReady(true);
-          setCheckingSession(false);
-          return;
-        }
-
-        console.log('🔍 No existing session, setting up auth listener...');
-
-        // Set up auth state change listener to catch the session automatically
-        const { data: { subscription } } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
-          console.log('🔔 Auth state change:', event, session?.user?.email);
-          
-          if (event === 'SIGNED_IN' && session?.user) {
-            console.log('✅ User signed in via auth state change:', session.user.email);
-            setUser(session.user);
-            setSessionReady(true);
-            setCheckingSession(false);
-            setError(''); // Clear any existing errors
-          } else if (event === 'TOKEN_REFRESHED' && session?.user) {
-            console.log('✅ Token refreshed:', session.user.email);
-            setUser(session.user);
-            setSessionReady(true);
-          } else if (event === 'SIGNED_OUT') {
-            console.log('❌ User signed out');
-            setUser(null);
-            setSessionReady(false);
-          }
-        });
-
-        // Check if we have URL params and trigger auth automatically
+        // Extract tokens from URL
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const searchParams = new URLSearchParams(window.location.search);
         
@@ -79,39 +45,91 @@ const UltimateResetPassword = () => {
         const refreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token');
         const type = hashParams.get('type') || searchParams.get('type');
 
+        console.log('🔑 Token extraction:', { 
+          hasAccessToken: !!accessToken,
+          hasRefreshToken: !!refreshToken,
+          type,
+          tokenLength: accessToken?.length
+        });
+
         if (!accessToken || type !== 'recovery') {
-          console.log('❌ No valid reset tokens found');
           setError('Invalid reset link. Please request a new password reset.');
           setCheckingSession(false);
           return;
         }
 
-        console.log('🔑 Valid tokens found, triggering auth...');
+        // Method 1: Try direct token exchange
+        console.log('🔄 Attempting direct token processing...');
+        
+        try {
+          const { data, error: sessionError } = await supabaseClient.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken || '',
+          });
 
-        // The presence of the tokens in the URL should automatically trigger Supabase auth
-        // But if it doesn't work after a few seconds, we'll show an error
-        setTimeout(() => {
-          if (!sessionReady && !user) {
-            console.log('⏰ Auth timeout, showing error');
-            setError('Reset link expired or invalid. Please request a new password reset.');
+          if (!sessionError && data?.session?.user) {
+            console.log('✅ Direct session setup successful:', data.session.user.email);
+            setUser(data.session.user);
+            setSessionReady(true);
             setCheckingSession(false);
+            return;
           }
-        }, 10000); // 10 second timeout
 
-        // Clean up subscription on unmount
-        return () => {
-          subscription.unsubscribe();
-        };
+          console.log('⚠️ Direct session setup failed, trying alternative...');
+        } catch (directError) {
+          console.log('⚠️ Direct session error:', directError.message);
+        }
+
+        // Method 2: Use the token to verify user and create manual session
+        console.log('🔄 Attempting token verification...');
+        
+        try {
+          // Make a direct API call to verify the token and get user info
+          const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+          const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
+
+          const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'apikey': supabaseKey
+            }
+          });
+
+          if (userResponse.ok) {
+            const userData = await userResponse.json();
+            console.log('✅ Token verification successful:', userData.email);
+            
+            // Create a fake session object for our use
+            setUser({
+              id: userData.id,
+              email: userData.email,
+              user_metadata: userData.user_metadata,
+              accessToken: accessToken // Store token for password update
+            });
+            setSessionReady(true);
+            setCheckingSession(false);
+            return;
+          }
+
+          console.log('❌ Token verification failed:', userResponse.status);
+        } catch (verifyError) {
+          console.log('❌ Token verification error:', verifyError.message);
+        }
+
+        // If all methods fail
+        setError('Reset link has expired or is invalid. Please request a new password reset.');
+        setCheckingSession(false);
 
       } catch (err) {
-        console.error('💥 Auth initialization error:', err);
-        setError('Failed to initialize authentication. Please request a new password reset.');
+        console.error('💥 Token processing error:', err);
+        setError('Failed to process reset link. Please request a new password reset.');
         setCheckingSession(false);
       }
     };
 
-    initializeAuth();
-  }, [sessionReady, user]);
+    processResetTokens();
+  }, []);
 
   // Countdown for success redirect
   useEffect(() => {
@@ -162,6 +180,39 @@ const UltimateResetPassword = () => {
     }
   };
 
+  // Direct password update using the stored access token
+  const updatePasswordDirect = async (newPassword) => {
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
+
+      console.log('🔄 Updating password with direct API call...');
+
+      const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.accessToken}`,
+          'apikey': supabaseKey
+        },
+        body: JSON.stringify({
+          password: newPassword
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `API Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return { data, error: null };
+    } catch (error) {
+      console.error('💥 Direct password update failed:', error);
+      return { data: null, error };
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -176,28 +227,42 @@ const UltimateResetPassword = () => {
         return;
       }
 
-      if (!sessionReady || !user || !supabase) {
-        throw new Error('Authentication session not ready. Please refresh and try again.');
+      if (!sessionReady || !user) {
+        throw new Error('Authentication not ready. Please refresh and try again.');
       }
 
-      console.log('🔄 Updating password for user:', user.email);
+      console.log('🔄 Starting password update for:', user.email);
 
-      // Use Supabase client directly since we have an authenticated session
-      const { data, error: updateError } = await supabase.auth.updateUser({
-        password: formData.password
-      });
+      // Method 1: Try using Supabase client if session exists
+      if (supabase) {
+        try {
+          const { data, error: updateError } = await supabase.auth.updateUser({
+            password: formData.password
+          });
 
-      if (updateError) {
-        console.error('❌ Password update error:', updateError);
-        
-        if (updateError.message?.includes('session') || updateError.message?.includes('token')) {
-          throw new Error('Your session has expired. Please request a new password reset.');
+          if (!updateError && data) {
+            console.log('✅ Password updated via Supabase client');
+            setSuccess(true);
+            return;
+          }
+
+          console.log('⚠️ Supabase client update failed, trying direct API...');
+        } catch (clientError) {
+          console.log('⚠️ Supabase client error:', clientError.message);
         }
-        
-        throw new Error(updateError.message || 'Failed to update password');
       }
 
-      console.log('✅ Password updated successfully for:', data.user?.email);
+      // Method 2: Direct API call with stored token
+      const { data: directData, error: directError } = await updatePasswordDirect(formData.password);
+
+      if (directError) {
+        if (directError.message?.includes('expired') || directError.message?.includes('invalid')) {
+          throw new Error('Reset link has expired. Please request a new password reset.');
+        }
+        throw new Error(directError.message || 'Failed to update password');
+      }
+
+      console.log('✅ Password updated successfully via direct API');
       setSuccess(true);
 
     } catch (err) {
@@ -229,13 +294,13 @@ const UltimateResetPassword = () => {
               </div>
             </div>
             <CardTitle className="text-2xl font-bold text-white mb-2">
-              Authenticating Reset Link
+              Processing Reset Link
             </CardTitle>
             <p className="text-gray-300 mb-4">
-              Please wait while we securely authenticate your password reset request...
+              Please wait while we securely process your password reset request...
             </p>
             <p className="text-gray-400 text-sm">
-              This may take a few moments as we verify your credentials.
+              Validating tokens and establishing secure session
             </p>
           </CardHeader>
         </Card>
@@ -298,13 +363,13 @@ const UltimateResetPassword = () => {
             Create New Password
           </CardTitle>
           <p className="text-gray-300 mb-4">
-            {sessionReady && user ? `Welcome back, ${user.email?.split('@')[0]}!` : 'Enter a strong password for your account'}
+            {sessionReady && user ? `Welcome, ${user.email?.split('@')[0]}!` : 'Enter a strong password for your account'}
           </p>
           
           {sessionReady && user && (
             <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 mb-4">
               <p className="text-green-400 text-sm">
-                ✅ Authentication successful! You can now update your password.
+                ✅ Reset link verified! You can now update your password.
               </p>
             </div>
           )}
@@ -470,4 +535,4 @@ const UltimateResetPassword = () => {
   );
 };
 
-export default UltimateResetPassword;
+export default FinalWorkingSolution;
