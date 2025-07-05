@@ -10,8 +10,10 @@ import RequireAuth from "./components/require-auth"
 import RedirectLink from "./pages/redirect-link"
 import LinkPage from "./pages/link"
 import Settings from "./pages/settings"
-
-
+import AdminDashboard from "./pages/admin/admin-dashboard"
+import RequireAdmin from "./components/admin/require-admin"
+import BanCheckWrapper from "./components/admin/BanCheckWrapper"
+ // Add this import
 
 const router = createBrowserRouter([
   {
@@ -42,21 +44,45 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/settings",
+        element: (
+          <RequireAuth>
+            <Settings />
+          </RequireAuth>
+        )
+      },
+      // Admin Routes
+      {
+        path: "/admin",
+        element: (
+          <RequireAdmin>
+            <AdminDashboard />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: "/admin/dashboard",
+        element: (
+          <RequireAdmin>
+            <AdminDashboard />
+          </RequireAdmin>
+        ),
+      },
+      // Redirect link should be last to catch any short URLs
+      {
         path: "/:id",
         element: <RedirectLink />,
       },
-      {
-  path: "/settings",
-  element: <Settings />
-}
     ],
   },
 ]);
 
 export default function App() {
-  return ( 
-     <UrlProvider>
-    <RouterProvider router={router} />
-  </UrlProvider>
+  return (
+    <UrlProvider>
+      <BanCheckWrapper>
+        <RouterProvider router={router} />
+      </BanCheckWrapper>
+    </UrlProvider>
   )
 }

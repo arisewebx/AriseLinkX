@@ -123,3 +123,37 @@ export async function deleteUrl(id) {
 
   return data;
 }
+
+// New function to get ALL URLs for admin dashboard
+export async function getAllUrls() {
+  let {data, error} = await supabase
+    .from("urls")
+    .select("*");  // Remove the .eq("user_id", user_id) filter
+
+  if (error) {
+    console.error(error);
+    throw new Error("Unable to load URLs");
+  }
+
+  return data;
+}
+
+// Alternative: Get URLs with user information for better admin insights
+export async function getAllUrlsWithUsers() {
+  let {data, error} = await supabase
+    .from("urls")
+    .select(`
+      *,
+      users:user_id (
+        name,
+        email
+      )
+    `);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Unable to load URLs with user data");
+  }
+
+  return data;
+}

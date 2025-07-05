@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {logout} from "@/db/apiAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { LinkIcon, LogOut, Sparkles, User, Settings } from 'lucide-react'
+import { LinkIcon, LogOut, Sparkles, User, Settings, Shield } from 'lucide-react'
 import { UrlState } from '@/context'
 import useFetch from '@/hooks/use-fetch'
 import { BarLoader } from 'react-spinners';
@@ -20,6 +20,9 @@ const Header = () => {
   const navigate = useNavigate()
   const {user, fetchUser} = UrlState()
   const {loading, fn: fnLogout} = useFetch(logout)
+  
+  // Check if user is admin (matching backend logic from apiAdmin.js)
+  const isAdmin = user?.email === 'karthickrajaofficial12@gmail.com' || user?.user_metadata?.role === 'admin';
   
   return (
     <>
@@ -61,6 +64,7 @@ const Header = () => {
                     <div className="hidden md:block text-right">
                       <p className="text-sm font-medium text-white">
                         {user?.user_metadata?.name || 'User'}
+                        {isAdmin && <span className="ml-2 text-xs bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded-full">Admin</span>}
                       </p>
                       <p className="text-xs text-gray-400">
                         {user?.email}
@@ -105,6 +109,7 @@ const Header = () => {
                       <div>
                         <p className="font-medium text-white">
                           {user?.user_metadata?.name || 'User'}
+                          {isAdmin && <span className="ml-2 text-xs bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded-full">Admin</span>}
                         </p>
                         <p className="text-xs text-gray-400">
                           {user?.email}
@@ -128,20 +133,33 @@ const Header = () => {
                     </Link>
                   </DropdownMenuItem>
 
+                  {/* Admin Menu Item - Only show for admin users */}
+                  {isAdmin && (
+                    <DropdownMenuItem className="group cursor-pointer focus:bg-white/5 hover:bg-white/5">
+                      <Link to="/admin" className="flex items-center w-full text-gray-200 group-hover:text-white transition-colors duration-200">
+                        <div className="mr-3 p-1 rounded-md bg-orange-500/20 group-hover:bg-orange-500/30 transition-colors duration-200">
+                          <Shield className="h-4 w-4 text-orange-400" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Admin</p>
+                          <p className="text-xs text-gray-400">System management</p>
+                        </div>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+
                   <DropdownMenuItem className="group cursor-pointer focus:bg-white/5 hover:bg-white/5">
                     <Link to="/settings" className="flex items-center w-full text-gray-200 group-hover:text-white transition-colors duration-200">
-
-                    <div className="flex items-center w-full text-gray-200 group-hover:text-white transition-colors duration-200">
-                      <div className="mr-3 p-1 rounded-md bg-cyan-500/20 group-hover:bg-cyan-500/30 transition-colors duration-200">
-                        <Settings className="h-4 w-4 text-cyan-400" />
+                      <div className="flex items-center w-full text-gray-200 group-hover:text-white transition-colors duration-200">
+                        <div className="mr-3 p-1 rounded-md bg-cyan-500/20 group-hover:bg-cyan-500/30 transition-colors duration-200">
+                          <Settings className="h-4 w-4 text-cyan-400" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Settings</p>
+                          <p className="text-xs text-gray-400">Account preferences</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium">Settings</p>
-                        <p className="text-xs text-gray-400">Account preferences</p>
-                      </div>
-                    </div>
                     </Link>
-
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator className="bg-white/10" />

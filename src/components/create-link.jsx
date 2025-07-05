@@ -223,7 +223,7 @@ const CreateLink = () => {
             {/* Custom URL Input */}
             <div>
               <label className="text-xs font-medium text-gray-300 mb-1 block">
-                Custom URL (Optional)
+                Custom URL 
               </label>
               <div className="flex items-center gap-2">
                 <Card className="bg-white/5 border-white/10 px-2 py-1.5 text-cyan-400 text-xs font-medium">
