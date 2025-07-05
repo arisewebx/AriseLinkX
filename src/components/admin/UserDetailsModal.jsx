@@ -36,12 +36,12 @@
 //   const [activeTab, setActiveTab] = useState('overview');
   
 //   // Debug: Log the userId to see what we're getting
-//   console.log('UserDetailsModal - userId:', userId, 'type:', typeof userId);
+//  // console('UserDetailsModal - userId:', userId, 'type:', typeof userId);
   
 //   // Ensure userId is a string
 //   const cleanUserId = typeof userId === 'object' ? userId?.id : userId;
   
-//   console.log('UserDetailsModal - cleanUserId:', cleanUserId, 'type:', typeof cleanUserId);
+//  // console('UserDetailsModal - cleanUserId:', cleanUserId, 'type:', typeof cleanUserId);
   
 //   const { 
 //     loading: detailsLoading, 
@@ -66,7 +66,7 @@
   
 //   useEffect(() => {
 //     if (isOpen && cleanUserId) {
-//       console.log('Fetching user details for:', cleanUserId);
+//      // console('Fetching user details for:', cleanUserId);
 //       fetchUserDetails();
 //       fetchUserActivity();
 //     }
@@ -76,7 +76,7 @@
   
 //   const handleMakeAdmin = async () => {
 //     if (confirm('Are you sure you want to make this user an admin?')) {
-//       console.log('Making admin for userId:', cleanUserId);
+//      // console('Making admin for userId:', cleanUserId);
 //       try {
 //         await makeAdminFn(cleanUserId);
 //         fetchUserDetails();
@@ -90,7 +90,7 @@
   
 //   const handleRemoveAdmin = async () => {
 //     if (confirm('Are you sure you want to remove admin privileges from this user?')) {
-//       console.log('Removing admin for userId:', cleanUserId);
+//      // console('Removing admin for userId:', cleanUserId);
 //       try {
 //         await removeAdminFn(cleanUserId);
 //         fetchUserDetails();
@@ -104,7 +104,7 @@
   
 //   const handleBanUser = async () => {
 //     if (confirm('Are you sure you want to ban this user? They will not be able to access the platform.')) {
-//       console.log('Banning userId:', cleanUserId);
+//      // console('Banning userId:', cleanUserId);
 //       try {
 //         await banUserFn(cleanUserId);
 //         fetchUserDetails();
@@ -118,7 +118,7 @@
   
 // //   const handleUnbanUser = async () => {
 // //     if (confirm('Are you sure you want to unban this user?')) {
-// //       console.log('Unbanning userId:', cleanUserId);
+// //      // console('Unbanning userId:', cleanUserId);
 // //       try {
 // //         await unbanUserFn(cleanUserId);
 // //         fetchUserDetails();
@@ -165,7 +165,7 @@
 //   const handleDeleteUser = async () => {
 //     if (confirm('⚠️ DANGER: This will permanently delete the user and ALL their data (links, clicks, etc.). This action cannot be undone. Are you absolutely sure?')) {
 //       if (confirm('Type "DELETE" to confirm this destructive action.')) {
-//         console.log('Deleting userId:', cleanUserId);
+//        // console('Deleting userId:', cleanUserId);
 //         try {
 //           await deleteUserFn(cleanUserId);
 //           onUserUpdate();
@@ -628,12 +628,12 @@
 //   const [resultData, setResultData] = useState({});
   
 //   // Debug: Log the userId to see what we're getting
-//   console.log('UserDetailsModal - userId:', userId, 'type:', typeof userId);
+//  // console('UserDetailsModal - userId:', userId, 'type:', typeof userId);
   
 //   // Ensure userId is a string
 //   const cleanUserId = typeof userId === 'object' ? userId?.id : userId;
   
-//   console.log('UserDetailsModal - cleanUserId:', cleanUserId, 'type:', typeof cleanUserId);
+//  // console('UserDetailsModal - cleanUserId:', cleanUserId, 'type:', typeof cleanUserId);
   
 //   const { 
 //     loading: detailsLoading, 
@@ -658,7 +658,7 @@
   
 //   useEffect(() => {
 //     if (isOpen && cleanUserId) {
-//       console.log('Fetching user details for:', cleanUserId);
+//      // console('Fetching user details for:', cleanUserId);
 //       fetchUserDetails();
 //       fetchUserActivity();
 //     }
@@ -1349,7 +1349,7 @@
 //   const [resultData, setResultData] = useState({});
   
 //   // Debug: Log the userId to see what we're getting
-//   console.log('UserDetailsModal - userId:', userId, 'type:', typeof userId);
+//  // console('UserDetailsModal - userId:', userId, 'type:', typeof userId);
   
 //   // Ensure userId is a string - handle various possible formats
 //   const cleanUserId = (() => {
@@ -1367,11 +1367,11 @@
 //     return String(userId);
 //   })();
   
-//   console.log('UserDetailsModal - cleanUserId:', cleanUserId, 'type:', typeof cleanUserId);
+//  // console('UserDetailsModal - cleanUserId:', cleanUserId, 'type:', typeof cleanUserId);
   
 //   // Validate that we have a proper UUID
 //   const isValidUUID = cleanUserId && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(cleanUserId);
-//   console.log('UserDetailsModal - isValidUUID:', isValidUUID);
+//  // console('UserDetailsModal - isValidUUID:', isValidUUID);
   
 //   const { 
 //     loading: detailsLoading, 
@@ -1389,38 +1389,38 @@
 //   // Create separate fetch functions for admin actions with proper userId
 //   // Note: We'll call the API functions directly instead of using useFetch to avoid parameter issues
 //   const makeAdminFn = async (userId) => {
-//     console.log('makeAdminFn called with userId:', userId, 'type:', typeof userId);
+//    // console('makeAdminFn called with userId:', userId, 'type:', typeof userId);
 //     return await makeUserAdmin(userId);
 //   };
   
 //   const removeAdminFn = async (userId) => {
-//     console.log('removeAdminFn called with userId:', userId, 'type:', typeof userId);
+//    // console('removeAdminFn called with userId:', userId, 'type:', typeof userId);
 //     return await removeAdminPrivileges(userId);
 //   };
   
 //   const banUserFn = async (userId) => {
-//     console.log('banUserFn called with userId:', userId, 'type:', typeof userId);
+//    // console('banUserFn called with userId:', userId, 'type:', typeof userId);
 //     return await banUserSimple(userId);
 //   };
   
 //   const unbanUserFn = async (userId) => {
-//     console.log('unbanUserFn called with userId:', userId, 'type:', typeof userId);
+//    // console('unbanUserFn called with userId:', userId, 'type:', typeof userId);
 //     return await unbanUserSimple(userId);
 //   };
   
 //   const deleteUserFn = async (userId) => {
-//     console.log('deleteUserFn called with userId:', userId, 'type:', typeof userId);
+//    // console('deleteUserFn called with userId:', userId, 'type:', typeof userId);
 //     return await deleteUser(userId);
 //   };
   
 //   const deleteLinkFn = async (linkId) => {
-//     console.log('deleteLinkFn called with linkId:', linkId, 'type:', typeof linkId);
+//    // console('deleteLinkFn called with linkId:', linkId, 'type:', typeof linkId);
 //     return await deleteUserLink(linkId);
 //   };
   
 //   useEffect(() => {
 //     if (isOpen && cleanUserId && isValidUUID) {
-//       console.log('Fetching user details for valid UUID:', cleanUserId);
+//      // console('Fetching user details for valid UUID:', cleanUserId);
 //       fetchUserDetails();
 //       fetchUserActivity();
 //     } else if (isOpen && cleanUserId && !isValidUUID) {
@@ -1512,7 +1512,7 @@
 //     try {
 //       // Here you would implement your email sending logic
 //       // This could be a separate API call to your email service
-//       console.log('Sending email to:', user?.email, 'Message:', message);
+//      // console('Sending email to:', user?.email, 'Message:', message);
       
 //       // Simulate email sending delay
 //       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -1600,12 +1600,12 @@
 //       let successMessage = '';
 //       let errorMessage = '';
       
-//       console.log(`Executing ${confirmationType} action for userId:`, cleanUserId);
+//      // console(`Executing ${confirmationType} action for userId:`, cleanUserId);
       
 //       switch (confirmationType) {
 //         case 'promote':
 //           setCurrentAction('Promoting user to admin...');
-//           console.log('About to call makeAdminFn with cleanUserId:', cleanUserId);
+//          // console('About to call makeAdminFn with cleanUserId:', cleanUserId);
 //           result = await makeAdminFn(cleanUserId);
 //           successMessage = `Successfully promoted ${user?.name || user?.email} to admin. They now have administrative privileges.`;
 //           errorMessage = 'Failed to promote user to admin';
@@ -1613,7 +1613,7 @@
 
 //         case 'demote':
 //           setCurrentAction('Removing admin privileges...');
-//           console.log('About to call removeAdminFn with cleanUserId:', cleanUserId);
+//          // console('About to call removeAdminFn with cleanUserId:', cleanUserId);
 //           result = await removeAdminFn(cleanUserId);
 //           successMessage = `Successfully removed admin privileges from ${user?.name || user?.email}.`;
 //           errorMessage = 'Failed to remove admin privileges';
@@ -1621,7 +1621,7 @@
 
 //         case 'ban':
 //           setCurrentAction('Banning user...');
-//           console.log('About to call banUserFn with cleanUserId:', cleanUserId);
+//          // console('About to call banUserFn with cleanUserId:', cleanUserId);
 //           result = await banUserFn(cleanUserId);
 //           successMessage = `Successfully banned ${user?.name || user?.email}. They will see a suspension screen on their next interaction.`;
 //           errorMessage = 'Failed to ban user';
@@ -1629,7 +1629,7 @@
 
 //         case 'unban':
 //           setCurrentAction('Unbanning user...');
-//           console.log('About to call unbanUserFn with cleanUserId:', cleanUserId);
+//          // console('About to call unbanUserFn with cleanUserId:', cleanUserId);
 //           result = await unbanUserFn(cleanUserId);
 //           successMessage = `Successfully unbanned ${user?.name || user?.email}. They can now access the platform normally.`;
 //           errorMessage = 'Failed to unban user';
@@ -1637,7 +1637,7 @@
 
 //         case 'deleteLink':
 //           setCurrentAction('Deleting link...');
-//           console.log('About to call deleteLinkFn with linkId:', confirmationData.linkId);
+//          // console('About to call deleteLinkFn with linkId:', confirmationData.linkId);
 //           result = await deleteLinkFn(confirmationData.linkId);
 //           successMessage = `Successfully deleted the link "${confirmationData.linkTitle}" and all its click data.`;
 //           errorMessage = 'Failed to delete link';
@@ -1645,7 +1645,7 @@
 
 //         case 'delete':
 //           setCurrentAction('Deleting user and all data...');
-//           console.log('About to call deleteUserFn with cleanUserId:', cleanUserId);
+//          // console('About to call deleteUserFn with cleanUserId:', cleanUserId);
 //           result = await deleteUserFn(cleanUserId);
 //           successMessage = `Successfully deleted ${user?.name || user?.email} and all associated data.`;
 //           errorMessage = 'Failed to delete user';
@@ -2235,7 +2235,7 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
   const [resultData, setResultData] = useState({});
   
   // Debug: Log the userId to see what we're getting
-  console.log('UserDetailsModal - userId:', userId, 'type:', typeof userId);
+  //// console('UserDetailsModal - userId:', userId, 'type:', typeof userId);
   
   // Ensure userId is a string - handle various possible formats
   const cleanUserId = (() => {
@@ -2253,11 +2253,11 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
     return String(userId);
   })();
   
-  console.log('UserDetailsModal - cleanUserId:', cleanUserId, 'type:', typeof cleanUserId);
+  //// console('UserDetailsModal - cleanUserId:', cleanUserId, 'type:', typeof cleanUserId);
   
   // Validate that we have a proper UUID
   const isValidUUID = cleanUserId && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(cleanUserId);
-  console.log('UserDetailsModal - isValidUUID:', isValidUUID);
+  //// console('UserDetailsModal - isValidUUID:', isValidUUID);
   
   const { 
     loading: detailsLoading, 
@@ -2275,38 +2275,38 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
   // Create separate fetch functions for admin actions with proper userId
   // Note: We'll call the API functions directly instead of using useFetch to avoid parameter issues
   const makeAdminFn = async (userId) => {
-    console.log('makeAdminFn called with userId:', userId, 'type:', typeof userId);
+    //// console('makeAdminFn called with userId:', userId, 'type:', typeof userId);
     return await makeUserAdmin(userId);
   };
   
   const removeAdminFn = async (userId) => {
-    console.log('removeAdminFn called with userId:', userId, 'type:', typeof userId);
+    //// console('removeAdminFn called with userId:', userId, 'type:', typeof userId);
     return await removeAdminPrivileges(userId);
   };
   
   const banUserFn = async (userId) => {
-    console.log('banUserFn called with userId:', userId, 'type:', typeof userId);
+    //// console('banUserFn called with userId:', userId, 'type:', typeof userId);
     return await banUserSimple(userId);
   };
   
   const unbanUserFn = async (userId) => {
-    console.log('unbanUserFn called with userId:', userId, 'type:', typeof userId);
+    //// console('unbanUserFn called with userId:', userId, 'type:', typeof userId);
     return await unbanUserSimple(userId);
   };
   
   const deleteUserFn = async (userId) => {
-    console.log('deleteUserFn called with userId:', userId, 'type:', typeof userId);
+    //// console('deleteUserFn called with userId:', userId, 'type:', typeof userId);
     return await deleteUser(userId);
   };
   
   const deleteLinkFn = async (linkId) => {
-    console.log('deleteLinkFn called with linkId:', linkId, 'type:', typeof linkId);
+    //// console('deleteLinkFn called with linkId:', linkId, 'type:', typeof linkId);
     return await deleteUserLink(linkId);
   };
   
   useEffect(() => {
     if (isOpen && cleanUserId && isValidUUID) {
-      console.log('Fetching user details for valid UUID:', cleanUserId);
+      //// console('Fetching user details for valid UUID:', cleanUserId);
       fetchUserDetails();
       fetchUserActivity();
     } else if (isOpen && cleanUserId && !isValidUUID) {
@@ -2398,7 +2398,7 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
     try {
       // Here you would implement your email sending logic
       // This could be a separate API call to your email service
-      console.log('Sending email to:', user?.email, 'Message:', message);
+      //// console('Sending email to:', user?.email, 'Message:', message);
       
       // Simulate email sending delay
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -2438,7 +2438,7 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
   };
 
   const handleDeleteLink = async (linkId, linkTitle) => {
-    console.log('handleDeleteLink called with:', { linkId, linkTitle });
+    //// console('handleDeleteLink called with:', { linkId, linkTitle });
     
     if (!linkId) {
       console.error('No linkId provided for deletion');
@@ -2493,12 +2493,12 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
       let successMessage = '';
       let errorMessage = '';
       
-      console.log(`Executing ${confirmationType} action for userId:`, cleanUserId);
+      //// console(`Executing ${confirmationType} action for userId:`, cleanUserId);
       
       switch (confirmationType) {
         case 'promote':
           setCurrentAction('Promoting user to admin...');
-          console.log('About to call makeAdminFn with cleanUserId:', cleanUserId);
+          //// console('About to call makeAdminFn with cleanUserId:', cleanUserId);
           result = await makeAdminFn(cleanUserId);
           successMessage = `Successfully promoted ${user?.name || user?.email} to admin. They now have administrative privileges.`;
           errorMessage = 'Failed to promote user to admin';
@@ -2506,7 +2506,7 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
 
         case 'demote':
           setCurrentAction('Removing admin privileges...');
-          console.log('About to call removeAdminFn with cleanUserId:', cleanUserId);
+          //// console('About to call removeAdminFn with cleanUserId:', cleanUserId);
           result = await removeAdminFn(cleanUserId);
           successMessage = `Successfully removed admin privileges from ${user?.name || user?.email}.`;
           errorMessage = 'Failed to remove admin privileges';
@@ -2514,7 +2514,7 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
 
         case 'ban':
           setCurrentAction('Banning user...');
-          console.log('About to call banUserFn with cleanUserId:', cleanUserId);
+          //// console('About to call banUserFn with cleanUserId:', cleanUserId);
           result = await banUserFn(cleanUserId);
           successMessage = `Successfully banned ${user?.name || user?.email}. They will see a suspension screen on their next interaction.`;
           errorMessage = 'Failed to ban user';
@@ -2522,7 +2522,7 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
 
         case 'unban':
           setCurrentAction('Unbanning user...');
-          console.log('About to call unbanUserFn with cleanUserId:', cleanUserId);
+          //// console('About to call unbanUserFn with cleanUserId:', cleanUserId);
           result = await unbanUserFn(cleanUserId);
           successMessage = `Successfully unbanned ${user?.name || user?.email}. They can now access the platform normally.`;
           errorMessage = 'Failed to unban user';
@@ -2530,22 +2530,22 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
 
         case 'deleteLink':
           setCurrentAction('Deleting link...');
-          console.log('About to call deleteLinkFn with linkId:', confirmationData.linkId);
-          console.log('confirmationData:', confirmationData);
+          //// console('About to call deleteLinkFn with linkId:', confirmationData.linkId);
+          //// console('confirmationData:', confirmationData);
           
           if (!confirmationData.linkId) {
             throw new Error('No link ID provided for deletion');
           }
           
           result = await deleteLinkFn(confirmationData.linkId);
-          console.log('Delete link result:', result);
+          //// console('Delete link result:', result);
           successMessage = `Successfully deleted the link "${confirmationData.linkTitle}" and all its click data.`;
           errorMessage = 'Failed to delete link';
           break;
 
         case 'delete':
           setCurrentAction('Deleting user and all data...');
-          console.log('About to call deleteUserFn with cleanUserId:', cleanUserId);
+          //// console('About to call deleteUserFn with cleanUserId:', cleanUserId);
           result = await deleteUserFn(cleanUserId);
           successMessage = `Successfully deleted ${user?.name || user?.email} and all associated data.`;
           errorMessage = 'Failed to delete user';
@@ -2822,7 +2822,7 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
                       {urls.length > 0 && (
                         <Button
                           size="sm"
-                          onClick={() => console.log('All URLs:', urls)}
+                          onClick={() => console('All URLs:', urls)}
                           className="bg-gray-600/20 hover:bg-gray-600/30 border border-gray-500/30 text-gray-300 text-xs"
                         >
                           Debug URLs
@@ -2854,12 +2854,12 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
                                   size="sm"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    console.log('Delete button clicked for link:', url.id, url.title);
-                                    console.log('actionLoading:', actionLoading);
-                                    console.log('Full url object:', url);
+                                   // console('Delete button clicked for link:', url.id, url.title);
+                                   // console('actionLoading:', actionLoading);
+                                   // console('Full url object:', url);
                                     
                                     if (actionLoading) {
-                                      console.log('Button disabled due to actionLoading');
+                                     console('Button disabled due to actionLoading');
                                       return;
                                     }
                                     

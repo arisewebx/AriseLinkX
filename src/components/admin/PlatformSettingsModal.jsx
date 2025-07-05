@@ -50,7 +50,7 @@ const PlatformSettingsModal = ({ isOpen, onClose }) => {
       // TODO: Implement actual API call to save settings
       // await savePlatformSettings(settings);
       
-      console.log('Saving platform settings:', settings);
+      // console.log('Saving platform settings:', settings);
       
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -58,7 +58,7 @@ const PlatformSettingsModal = ({ isOpen, onClose }) => {
       alert('Platform settings saved successfully!');
       onClose();
     } catch (error) {
-      console.error('Error saving settings:', error);
+      // console.error('Error saving settings:', error);
       alert('Error saving settings. Please try again.');
     } finally {
       setIsSaving(false);

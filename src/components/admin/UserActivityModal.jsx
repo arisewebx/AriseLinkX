@@ -776,7 +776,7 @@ const UserActivityModal = ({ isOpen, onClose, users }) => {
           }
         }
       } catch (error) {
-        console.error('Error fetching click activities:', error);
+        // console.error('Error fetching click activities:', error);
       }
 
       // Add some security alerts for banned users or suspicious activity
@@ -810,7 +810,7 @@ const UserActivityModal = ({ isOpen, onClose, users }) => {
       setActivities(allActivities);
       
     } catch (error) {
-      console.error('Error fetching activities:', error);
+      // console.error('Error fetching activities:', error);
       // Fallback to empty activities
       setActivities([]);
     } finally {

@@ -293,7 +293,7 @@ const SecurityCenterModal = ({ isOpen, onClose, allUrls, users }) => {
       setLastScanTime(new Date());
       alert(`Security scan completed! Found ${securityAnalysis.stats.flaggedUrls} potential threats.`);
     } catch (error) {
-      console.error('Security scan failed:', error);
+      // console.error('Security scan failed:', error);
       alert('Security scan failed. Please try again.');
     } finally {
       setScanRunning(false);
@@ -304,33 +304,33 @@ const SecurityCenterModal = ({ isOpen, onClose, allUrls, users }) => {
     try {
       switch (action) {
         case 'approve':
-          console.log('Approving URL:', data);
+          // console.log('Approving URL:', data);
           alert('URL approved and whitelisted');
           break;
         case 'block':
           if (!window.confirm('Block this URL? It will be immediately disabled.')) return;
-          console.log('Blocking URL:', data);
+          // console.log('Blocking URL:', data);
           alert('URL blocked successfully');
           break;
         case 'delete':
           if (!window.confirm('Delete this URL? This action cannot be undone.')) return;
-          console.log('Deleting URL:', data);
+          // console.log('Deleting URL:', data);
           alert('URL deleted successfully');
           break;
         case 'ban_user':
           if (!window.confirm('Ban this user? They will lose access to all features.')) return;
-          console.log('Banning user:', data);
+          // console.log('Banning user:', data);
           alert('User banned successfully');
           break;
         case 'investigate':
-          console.log('Flagging for investigation:', data);
+          // console.log('Flagging for investigation:', data);
           alert('Marked for manual investigation');
           break;
         default:
-          console.log('Unknown action:', action);
+          // console.log('Unknown action:', action);
       }
     } catch (error) {
-      console.error(`Error performing ${action}:`, error);
+      // console.error(`Error performing ${action}:`, error);
       alert(`Error performing ${action}. Please try again.`);
     }
   };

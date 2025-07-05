@@ -775,7 +775,7 @@ const BulkActionsModal = ({
       const selectedUserDetails = users.filter(user => selectedUsers.includes(user.id));
       const emails = selectedUserDetails.map(user => user.email);
       
-      console.log('Sending email to:', emails, 'Message:', message);
+      // console.log('Sending email to:', emails, 'Message:', message);
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       showResultModal({
@@ -793,7 +793,7 @@ const BulkActionsModal = ({
       
       onClose();
     } catch (error) {
-      console.error('Bulk email error:', error);
+      // console.error('Bulk email error:', error);
       showResultModal({
         type: 'error',
         title: 'Email Failed',
@@ -978,7 +978,7 @@ const BulkActionsModal = ({
       onRefreshUsers();
       
     } catch (error) {
-      console.error('Bulk operation error:', error);
+      // console.error('Bulk operation error:', error);
       showResultModal({
         type: 'error',
         title: 'Operation Failed',
