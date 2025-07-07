@@ -1150,6 +1150,7 @@ const LinkPage = () => {
           </Card>
 
           {/* Recent Clicks Timeline */}
+          {/* Recent Clicks Timeline */}
           <Card className="border-0 bg-gray-900/90 backdrop-blur-xl">
             <div className="absolute inset-0 bg-gradient-to-r from-gray-800/50 to-slate-800/50 rounded-lg"></div>
             <CardHeader className="relative z-10">
@@ -1163,7 +1164,10 @@ const LinkPage = () => {
             <CardContent className="relative z-10">
               <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-xl p-4">
                 <div className="space-y-3 max-h-80 overflow-y-auto">
-                  {stats?.slice().reverse().slice(0, 10).map((click, index) => {
+                  {stats?.slice()
+                    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // Sort by newest first
+                    .slice(0, 10) // Take first 10 (most recent)
+                    .map((click, index) => {
                     const timeAgo = (() => {
                       const now = new Date();
                       const clickTime = new Date(click.created_at);
@@ -1183,7 +1187,7 @@ const LinkPage = () => {
                                         accuracy === 'potential_vpn_proxy' ? 'text-orange-400' : 'text-gray-400';
 
                     return (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg hover:bg-gray-600/30 transition-colors border border-gray-600/20">
+                      <div key={`click-${click.id || index}-${click.created_at}`} className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg hover:bg-gray-600/30 transition-colors border border-gray-600/20">
                         <div className="flex items-center gap-3">
                           <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">
                             {click.device?.charAt(0)?.toUpperCase() || 'D'}
@@ -1220,9 +1224,11 @@ const LinkPage = () => {
                                   {click.location_source}
                                 </span>
                               )}
-                              {/* {click.timezone && (
-                                <span> • TZ: {click.timezone.split('/').pop()}</span>
-                              )} */}
+                              {click.timezone && (
+                                <span className="ml-2 text-gray-500"> 
+                                  TZ: {click.timezone.split('/').pop()}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1233,6 +1239,9 @@ const LinkPage = () => {
                               hour: '2-digit', 
                               minute: '2-digit' 
                             })}
+                          </div>
+                          <div className="text-gray-500 text-xs">
+                            {new Date(click.created_at).toLocaleDateString()}
                           </div>
                         </div>
                       </div>
