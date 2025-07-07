@@ -1220,9 +1220,9 @@ const LinkPage = () => {
                                   {click.location_source}
                                 </span>
                               )}
-                              {click.timezone && (
+                              {/* {click.timezone && (
                                 <span> • TZ: {click.timezone.split('/').pop()}</span>
-                              )}
+                              )} */}
                             </div>
                           </div>
                         </div>
