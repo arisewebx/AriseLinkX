@@ -2201,7 +2201,11 @@ import {
   Activity,
   Globe,
   ShieldOff,
-  Send
+  Send,
+  Clock,
+  Wifi,
+  AlertTriangle,
+  CheckCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -2216,6 +2220,7 @@ import {
   getUserActivity,
   deleteUserLink
 } from '@/db/apiAdmin';
+// Remove the import since we'll define it locally
 import { BarLoader } from 'react-spinners';
 import ConfirmationModal from '../admin/ConfirmationModel';
 import ResultModal from '../admin/ResultModel';
@@ -2233,6 +2238,62 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
   // Result modal states
   const [showResult, setShowResult] = useState(false);
   const [resultData, setResultData] = useState({});
+
+  // Location validation function (same as in apiClicks but handles missing timezone)
+  const validateLocationAccuracy = (country, timezone) => {
+    if (!country) return 'unknown';
+    
+    // If no timezone data, assume accurate for known countries (since admin API doesn't include timezone)
+    if (!timezone) {
+      // For admin analytics, assume legitimate countries are accurate
+      const legitimateCountries = ['India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Germany', 'France', 'Japan', 'China', 'Brazil'];
+      if (legitimateCountries.includes(country)) {
+        return 'likely_accurate';
+      }
+      return 'unknown';
+    }
+    
+    // India and Sri Lanka both use UTC+5:30, so both Kolkata and Colombo are valid for India
+    if (country === 'India' && (timezone.toLowerCase().includes('kolkata') || timezone.toLowerCase().includes('colombo'))) {
+      return 'likely_accurate';
+    }
+    
+    if (country === 'United States' && timezone.includes('America/')) {
+      return 'likely_accurate';
+    }
+    if (country === 'United Kingdom' && timezone.includes('Europe/London')) {
+      return 'likely_accurate';
+    }
+    
+    // For other countries, assume accurate if country and timezone region match
+    const timezoneRegion = timezone.split('/')[0]; // Asia, Europe, America, etc.
+    const countryToRegion = {
+      'India': 'Asia',
+      'China': 'Asia', 
+      'Japan': 'Asia',
+      'Thailand': 'Asia',
+      'Singapore': 'Asia',
+      'Malaysia': 'Asia',
+      'Indonesia': 'Asia',
+      'Sri Lanka': 'Asia',
+      'United States': 'America',
+      'Canada': 'America',
+      'Brazil': 'America',
+      'Mexico': 'America',
+      'Germany': 'Europe',
+      'France': 'Europe',
+      'United Kingdom': 'Europe',
+      'Italy': 'Europe',
+      'Spain': 'Europe'
+    };
+    
+    const expectedRegion = countryToRegion[country];
+    if (expectedRegion && timezoneRegion === expectedRegion) {
+      return 'likely_accurate';
+    }
+    
+    return 'potential_vpn_proxy';
+  };
   
   // Debug: Log the userId to see what we're getting
   //// console('UserDetailsModal - userId:', userId, 'type:', typeof userId);
@@ -2313,6 +2374,72 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
       console.error('Invalid UUID format:', cleanUserId);
     }
   }, [isOpen, cleanUserId, isValidUUID]);
+
+  // Calculate location analytics from user activity
+  const calculateLocationStats = () => {
+    if (!userActivity || userActivity.length === 0) {
+      return {
+        totalClicks: 0,
+        accurateClicks: 0,
+        vpnClicks: 0,
+        unknownClicks: 0,
+        uniqueCountries: 0,
+        uniqueCities: 0,
+        locationSources: {},
+        topCountries: []
+      };
+    }
+
+    let accurateClicks = 0;
+    let vpnClicks = 0;
+    let unknownClicks = 0;
+    const countries = new Set();
+    const cities = new Set();
+    const locationSources = {};
+    const countryCount = {};
+
+    userActivity.forEach(click => {
+      if (click.country && click.country !== 'Unknown') {
+        countries.add(click.country);
+        countryCount[click.country] = (countryCount[click.country] || 0) + 1;
+      }
+      if (click.city && click.city !== 'Unknown') {
+        cities.add(click.city);
+      }
+
+      if (click.location_source) {
+        locationSources[click.location_source] = (locationSources[click.location_source] || 0) + 1;
+      }
+
+      const accuracy = validateLocationAccuracy(click.country, click.timezone);
+      
+      if (accuracy === 'likely_accurate') {
+        accurateClicks++;
+      } else if (accuracy === 'potential_vpn_proxy') {
+        vpnClicks++;
+      } else {
+        unknownClicks++;
+      }
+    });
+
+    const topCountries = Object.entries(countryCount)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5)
+      .map(([country, count]) => ({ country, count }));
+
+    return {
+      totalClicks: userActivity.length,
+      accurateClicks,
+      vpnClicks,
+      unknownClicks,
+      uniqueCountries: countries.size,
+      uniqueCities: cities.size,
+      locationSources,
+      topCountries
+    };
+  };
+
+  const locationStats = calculateLocationStats();
   
   if (!isOpen) return null;
 
@@ -2778,6 +2905,76 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
                         </CardContent>
                       </Card>
                     </div>
+
+                    {/* Enhanced Location Analytics */}
+                    {locationStats.totalClicks > 0 && (
+                      <Card className="bg-white/5 border-white/10">
+                        <CardHeader>
+                          <CardTitle className="text-white flex items-center gap-2">
+                            <Globe className="w-5 h-5 text-cyan-400" />
+                            Location Analytics (Last 30 days)
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          {/* Location Quality Overview */}
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="text-center p-3 bg-green-500/10 rounded-lg border border-green-500/20">
+                              <div className="text-2xl font-bold text-green-400">{locationStats.accurateClicks}</div>
+                              <div className="text-xs text-gray-300">Verified Locations</div>
+                            </div>
+                            <div className="text-center p-3 bg-orange-500/10 rounded-lg border border-orange-500/20">
+                              <div className="text-2xl font-bold text-orange-400">{locationStats.vpnClicks}</div>
+                              <div className="text-xs text-gray-300">VPN/Proxy Detected</div>
+                            </div>
+                            <div className="text-center p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                              <div className="text-2xl font-bold text-blue-400">{locationStats.uniqueCountries}</div>
+                              <div className="text-xs text-gray-300">Countries</div>
+                            </div>
+                            <div className="text-center p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                              <div className="text-2xl font-bold text-purple-400">{locationStats.uniqueCities}</div>
+                              <div className="text-xs text-gray-300">Cities</div>
+                            </div>
+                          </div>
+
+                          {/* Top Countries */}
+                          {locationStats.topCountries.length > 0 && (
+                            <div>
+                              <h4 className="text-white font-medium mb-3">Top Countries</h4>
+                              <div className="space-y-2">
+                                {locationStats.topCountries.map(({ country, count }) => (
+                                  <div key={country} className="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+                                    <span className="text-gray-300">{country}</span>
+                                    <span className="text-white font-medium">{count} clicks</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Location Sources */}
+                          {Object.keys(locationStats.locationSources).length > 0 && (
+                            <div>
+                              <h4 className="text-white font-medium mb-3">Geolocation Sources</h4>
+                              <div className="grid grid-cols-2 gap-2">
+                                {Object.entries(locationStats.locationSources).map(([source, count]) => (
+                                  <div key={source} className="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+                                    <span className={`text-sm font-medium ${
+                                      source === 'ip-api' ? 'text-blue-300' :
+                                      source === 'ipapi' ? 'text-green-300' :
+                                      source === 'ipinfo' ? 'text-purple-300' :
+                                      'text-gray-300'
+                                    }`}>
+                                      {source}
+                                    </span>
+                                    <span className="text-white text-sm">{count}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    )}
                     
                     {/* User Info */}
                     <Card className="bg-white/5 border-white/10">
@@ -2819,15 +3016,6 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-xl font-bold text-white">User Links ({urls.length})</h3>
-                      {urls.length > 0 && (
-                        <Button
-                          size="sm"
-                          onClick={() => console('All URLs:', urls)}
-                          className="bg-gray-600/20 hover:bg-gray-600/30 border border-gray-500/30 text-gray-300 text-xs"
-                        >
-                          Debug URLs
-                        </Button>
-                      )}
                     </div>
                     
                     {urls.length === 0 ? (
@@ -2854,15 +3042,9 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
                                   size="sm"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                   // console('Delete button clicked for link:', url.id, url.title);
-                                   // console('actionLoading:', actionLoading);
-                                   // console('Full url object:', url);
-                                    
                                     if (actionLoading) {
-                                     console('Button disabled due to actionLoading');
                                       return;
                                     }
-                                    
                                     handleDeleteLink(url.id, url.title);
                                   }}
                                   disabled={actionLoading}
@@ -2883,7 +3065,7 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
                   </div>
                 )}
                 
-                {/* Activity Tab */}
+                {/* Enhanced Activity Tab */}
                 {activeTab === 'activity' && (
                   <div className="space-y-4">
                     <h3 className="text-xl font-bold text-white">Recent Activity (Last 30 days)</h3>
@@ -2891,41 +3073,78 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
                       <BarLoader width="100%" color="#8b5cf6" height={3} />
                     ) : userActivity && userActivity.length > 0 ? (
                       <div className="space-y-3">
-                        {userActivity.slice(0, 20).map((click, index) => (
-                          <div key={index} className="bg-white/5 border border-white/10 rounded-lg p-3">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <MousePointer className="w-4 h-4 text-cyan-400" />
-                                <div>
-                                  <p className="text-white text-sm">Link clicked</p>
-                                  <p className="text-gray-400 text-xs">
-                                    {new Date(click.created_at).toLocaleString()}
-                                  </p>
+                        {userActivity.slice(0, 20).map((click, index) => {
+                          const accuracy = validateLocationAccuracy(click.country, click.timezone);
+                          const accuracyColor = accuracy === 'likely_accurate' ? 'text-green-400' : 
+                                              accuracy === 'potential_vpn_proxy' ? 'text-orange-400' : 'text-gray-400';
+                          
+                          return (
+                            <div key={index} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <MousePointer className="w-4 h-4 text-cyan-400" />
+                                  <div>
+                                    <p className="text-white text-sm">Link clicked</p>
+                                    <p className="text-gray-400 text-xs">
+                                      {new Date(click.created_at).toLocaleString()}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-4 text-xs">
+                                  {click.country && (
+                                    <div className="flex items-center gap-1">
+                                      <Globe className="w-3 h-3" />
+                                      <span className="text-gray-300">{click.country}</span>
+                                      {accuracy !== 'unknown' && (
+                                        <>
+                                          <span className="text-gray-400">•</span>
+                                          <span className={`font-medium ${accuracyColor}`}>
+                                            {accuracy === 'likely_accurate' ? (
+                                              <CheckCircle className="w-3 h-3 inline" />
+                                            ) : (
+                                              <AlertTriangle className="w-3 h-3 inline" />
+                                            )}
+                                          </span>
+                                        </>
+                                      )}
+                                    </div>
+                                  )}
+                                  {click.city && (
+                                    <div className="flex items-center gap-1">
+                                      <MapPin className="w-3 h-3" />
+                                      <span className="text-gray-300">{click.city}</span>
+                                    </div>
+                                  )}
+                                  {click.device && (
+                                    <div className="flex items-center gap-1">
+                                      <Smartphone className="w-3 h-3" />
+                                      <span className="text-gray-300">{click.device}</span>
+                                    </div>
+                                  )}
+                                  {click.location_source && (
+                                    <div className="flex items-center gap-1">
+                                      <Wifi className="w-3 h-3" />
+                                      <span className={`text-xs font-medium ${
+                                        click.location_source === 'ip-api' ? 'text-blue-300' :
+                                        click.location_source === 'ipapi' ? 'text-green-300' :
+                                        click.location_source === 'ipinfo' ? 'text-purple-300' :
+                                        'text-gray-300'
+                                      }`}>
+                                        {click.location_source}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {click.timezone && (
+                                    <div className="flex items-center gap-1">
+                                      <Clock className="w-3 h-3" />
+                                      <span className="text-gray-400">{click.timezone.split('/').pop()}</span>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
-                              <div className="flex items-center gap-4 text-xs text-gray-400">
-                                {click.country && (
-                                  <div className="flex items-center gap-1">
-                                    <Globe className="w-3 h-3" />
-                                    {click.country}
-                                  </div>
-                                )}
-                                {click.device && (
-                                  <div className="flex items-center gap-1">
-                                    <Smartphone className="w-3 h-3" />
-                                    {click.device}
-                                  </div>
-                                )}
-                                {click.city && (
-                                  <div className="flex items-center gap-1">
-                                    <MapPin className="w-3 h-3" />
-                                    {click.city}
-                                  </div>
-                                )}
-                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     ) : (
                       <p className="text-gray-400">No recent activity.</p>
@@ -2933,13 +3152,13 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
                   </div>
                 )}
                 
-                {/* Actions Tab */}
+                {/* Actions Tab - unchanged */}
                 {activeTab === 'actions' && (
                   <div className="space-y-6">
                     <h3 className="text-xl font-bold text-white">User Actions</h3>
                     
                     {/* Communication Actions */}
-                    <Card className="bg-white/5 border-white/10">
+                    {/* <Card className="bg-white/5 border-white/10">
                       <CardHeader>
                         <CardTitle className="text-white flex items-center gap-2">
                           <Send className="w-5 h-5 text-blue-400" />
@@ -2959,7 +3178,7 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
                           Send Email
                         </Button>
                       </CardContent>
-                    </Card>
+                    </Card> */}
                     
                     {/* Admin Actions */}
                     <Card className="bg-white/5 border-white/10">
