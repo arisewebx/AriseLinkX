@@ -25,9 +25,14 @@ const Header = () => {
 
   const isAdmin = user?.email === 'arisewebx@gmail.com' || user?.user_metadata?.role === 'admin' || user?.app_metadata?.role === 'admin';
 
-  const handleLogout = () => {
-    fnLogout().then(() => { fetchUser(); navigate("/auth"); })
-    setMobileOpen(false)
+  const handleLogout = async () => {
+    try {
+      await fnLogout();
+      setMobileOpen(false);
+      window.location.href = '/auth';
+    } catch {
+      window.location.href = '/auth';
+    }
   }
 
   const navLinks = [
