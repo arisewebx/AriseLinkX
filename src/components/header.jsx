@@ -57,7 +57,7 @@ const Header = () => {
               Sign in
             </Button>
           ) : (
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
               <DropdownMenuTrigger className="flex items-center gap-2.5 outline-none">
                 <div className="text-right">
                   <p className="text-sm font-medium text-gray-900 leading-tight">

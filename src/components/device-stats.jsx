@@ -60,8 +60,8 @@ export default function DeviceStats({stats}) {
 
   return (
     <div style={{width: "100%", height: 350}}>
-      <ResponsiveContainer>
-        <PieChart width={700} height={350}>
+      <ResponsiveContainer className="focus:outline-none">
+        <PieChart width={700} height={350} className="focus:outline-none" style={{ outline: 'none' }}>
           <Pie
             data={result}
             cx="50%"

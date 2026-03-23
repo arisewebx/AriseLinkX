@@ -42,10 +42,15 @@
   }
   body {
     @apply bg-background text-foreground;
-    overflow-x: clip;
   }
 
   html {
-    overflow-x: clip;
   }
+}
+
+/* Fix Recharts click outline boxes */
+.recharts-wrapper,
+.recharts-wrapper *,
+.recharts-surface {
+  outline: none !important;
 }

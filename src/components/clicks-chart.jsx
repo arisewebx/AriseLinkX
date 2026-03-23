@@ -44,7 +44,7 @@ function buildWeekData(stats) {
     const d = new Date(now);
     d.setDate(now.getDate() - 6 + i);
     return {
-      label: d.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }),
+      label: d.toLocaleDateString([], { weekday: "short" }),
       date: d.toDateString(),
       count: 0,
     };
@@ -133,9 +133,7 @@ export default function ClicksChart({ stats = [] }) {
 
   const total = data.reduce((s, d) => s + d.count, 0);
 
-  // Show every nth label to avoid crowding
-  const tickInterval =
-    view === "Month" ? 4 : view === "Day" ? 3 : 0;
+  // Recharts minTickGap will handle crowding automatically
 
   return (
     <div>
@@ -165,8 +163,8 @@ export default function ClicksChart({ stats = [] }) {
 
       {/* Chart */}
       <div style={{ width: "100%", height: 220 }}>
-        <ResponsiveContainer>
-          <AreaChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+        <ResponsiveContainer className="focus:outline-none">
+          <AreaChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} className="focus:outline-none" style={{ outline: 'none' }}>
             <defs>
               <linearGradient id="clickGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#f97316" stopOpacity={0.15} />
@@ -179,7 +177,7 @@ export default function ClicksChart({ stats = [] }) {
               tick={{ fill: "#9ca3af", fontSize: 11 }}
               axisLine={false}
               tickLine={false}
-              interval={tickInterval}
+              minTickGap={20}
             />
             <YAxis
               allowDecimals={false}
