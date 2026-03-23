@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BarLoader } from 'react-spinners';
 import { Shield, AlertTriangle } from 'lucide-react';
 import { UrlState } from '@/context';
+import CubeLoader from './cube-loader';
 
 const RequireAdmin = ({ children }) => {
   const navigate = useNavigate();
@@ -15,19 +15,7 @@ const RequireAdmin = ({ children }) => {
   }, [user, loading, isAuthenticated, isAdmin, navigate]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="w-14 h-14 bg-orange-500 rounded-xl flex items-center justify-center mx-auto">
-            <Shield className="w-7 h-7 text-white animate-pulse" />
-          </div>
-          <p className="text-sm text-gray-500">Verifying admin access...</p>
-          <div className="w-48 mx-auto">
-            <BarLoader width="100%" color="#f97316" height={2} />
-          </div>
-        </div>
-      </div>
-    );
+    return <CubeLoader />;
   }
 
   if (isAuthenticated && !isAdmin) {
