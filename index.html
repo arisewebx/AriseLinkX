@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary Meta Tags -->
+    <title>AriseLinkX - URL Shortener & Analytics</title>
+    <meta name="title" content="AriseLinkX - URL Shortener & Analytics" />
+    <meta name="description" content="Create short, branded links with powerful click analytics, QR codes, and location tracking. Free URL shortener for everyone." />
+    <meta name="keywords" content="URL shortener, link shortener, QR code generator, link analytics, custom URLs, AriseLinkX, short links" />
+    <meta name="author" content="AriseLinkX by AriseWebX" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Theme & Brand Colors -->
+    <meta name="theme-color" content="#f97316" />
+    <meta name="msapplication-TileColor" content="#f97316" />
+    <meta name="msapplication-navbutton-color" content="#f97316" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://links.arisewebx.com/" />
+    <meta property="og:title" content="AriseLinkX - URL Shortener & Analytics" />
+    <meta property="og:description" content="Create short, branded links with powerful click analytics, QR codes, and location tracking." />
+    <meta property="og:image" content="https://links.arisewebx.com/og-image.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="AriseLinkX by AriseWebX" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://links.arisewebx.com/" />
+    <meta property="twitter:title" content="AriseLinkX - URL Shortener & Analytics" />
+    <meta property="twitter:description" content="Create short, branded links with powerful click analytics, QR codes, and location tracking." />
+    <meta property="twitter:image" content="https://links.arisewebx.com/og-image.svg" />
+    <meta property="twitter:creator" content="@AriseWebX" />
+    
+    <!-- PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="AriseLinkX by AriseWebX" />
+    <meta name="application-name" content="AriseLinkX by AriseWebX" />
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "AriseLinkX by AriseWebX",
+      "description": "Next-generation URL shortener with advanced analytics and custom QR codes",
+      "url": "https://links.arisewebx.com",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "AriseLinkX by AriseWebX"
+      }
+    }
+    </script>
+    
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://links.arisewebx.com/" />
+    
+    <!-- Additional Icons -->
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Inline Critical CSS for Performance -->
+    <style>
+      /* Critical CSS for loading state */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        background: #f9fafb;
+        color: #111827;
+        min-height: 100vh;
+      }
+      
+      #root {
+        min-height: 100vh;
+      }
+      
+      /* Loading animation */
+      .loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f9fafb;
+        z-index: 9999;
+      }
+      
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(249, 115, 22, 0.2);
+        border-top: 3px solid #f97316;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .loading-text {
+        margin-top: 20px;
+        color: #f97316;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <!-- <div id="loading" class="loading-container">
+      <div style="text-align: center;">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading AriseLinkX...</div>
+      </div>
+    </div> -->
+    
+    <!-- Main App Container -->
+    <div id="root"></div>
+    
+    <!-- Hide loading screen when React loads -->
+    <script>
+      window.addEventListener('DOMContentLoaded', function() {
+        // Hide loading screen after React mounts
+        setTimeout(function() {
+          const loading = document.getElementById('loading');
+          if (loading) {
+            loading.style.opacity = '0';
+            loading.style.transition = 'opacity 0.5s ease';
+            setTimeout(function() {
+              loading.style.display = 'none';
+            }, 500);
+          }
+        }, 1000);
+      });
+    </script>
+    
+    <!-- Module Script -->
+    <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+    
+    <!-- Analytics (Add your analytics code here) -->
+    <!-- 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    -->
+  </body>
+</html>

@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" fill="none">
+  <defs>
+    <linearGradient id="pageBg" x1="0" y1="0" x2="0" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fff7ed"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <radialGradient id="orb1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f97316" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orb2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fb923c" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#fb923c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="btnGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="underline" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-8%" y="-8%" width="116%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="24" flood-color="#f9731620"/>
+    </filter>
+    <filter id="softShadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#00000010"/>
+    </filter>
+    <pattern id="grid" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1.2" fill="#f97316" opacity="0.07"/>
+    </pattern>
+  </defs>
+
+  <!-- Page background -->
+  <rect width="1200" height="630" fill="url(#pageBg)"/>
+
+  <!-- Glow orbs -->
+  <ellipse cx="980" cy="315" rx="380" ry="340" fill="url(#orb1)"/>
+  <ellipse cx="200" cy="100" rx="260" ry="200" fill="url(#orb2)"/>
+
+  <!-- Dot grid -->
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Top orange bar -->
+  <rect x="0" y="0" width="1200" height="6" fill="url(#btnGrad)"/>
+
+  <!-- ══════════ LEFT CONTENT ══════════ -->
+
+  <!-- Badge -->
+  <rect x="64" y="54" width="190" height="32" rx="16" fill="white" stroke="#fed7aa" stroke-width="1.5" filter="url(#softShadow)"/>
+  <circle cx="86" cy="70" r="5" fill="#f97316"/>
+  <text x="100" y="75" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="600" fill="#c2410c">by AriseWebX</text>
+
+  <!-- Product name -->
+  <text x="64" y="170" font-family="system-ui,-apple-system,sans-serif" font-size="76" font-weight="900" fill="#111827" letter-spacing="-3">AriseLinkX</text>
+
+  <!-- Underline -->
+  <rect x="64" y="183" width="400" height="5" rx="2.5" fill="url(#underline)"/>
+
+  <!-- Tagline -->
+  <text x="64" y="240" font-family="system-ui,-apple-system,sans-serif" font-size="26" font-weight="300" fill="#9ca3af">Your links.</text>
+  <text x="64" y="272" font-family="system-ui,-apple-system,sans-serif" font-size="26" font-weight="800" fill="#f97316">Your brand. Every click, tracked.</text>
+
+  <!-- ── Demo Stats Row ── -->
+  <!-- Stat 1: Links -->
+  <rect x="64" y="300" width="138" height="72" rx="14" fill="white" stroke="#f3f4f6" stroke-width="1.5" filter="url(#softShadow)"/>
+  <text x="82" y="326" font-family="system-ui,-apple-system,sans-serif" font-size="9" font-weight="700" fill="#9ca3af" letter-spacing="1">LINKS</text>
+  <text x="82" y="358" font-family="system-ui,-apple-system,sans-serif" font-size="34" font-weight="900" fill="#111827">12</text>
+  <text x="82" y="372" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#22c55e">↑ +3 this week</text>
+
+  <!-- Stat 2: Clicks -->
+  <rect x="214" y="300" width="138" height="72" rx="14" fill="white" stroke="#f3f4f6" stroke-width="1.5" filter="url(#softShadow)"/>
+  <text x="232" y="326" font-family="system-ui,-apple-system,sans-serif" font-size="9" font-weight="700" fill="#9ca3af" letter-spacing="1">CLICKS</text>
+  <text x="232" y="358" font-family="system-ui,-apple-system,sans-serif" font-size="34" font-weight="900" fill="#111827">284</text>
+  <text x="232" y="372" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#22c55e">↑ +47 this week</text>
+
+  <!-- Stat 3: Countries -->
+  <rect x="364" y="300" width="138" height="72" rx="14" fill="white" stroke="#f3f4f6" stroke-width="1.5" filter="url(#softShadow)"/>
+  <text x="382" y="326" font-family="system-ui,-apple-system,sans-serif" font-size="9" font-weight="700" fill="#9ca3af" letter-spacing="1">COUNTRIES</text>
+  <text x="382" y="358" font-family="system-ui,-apple-system,sans-serif" font-size="34" font-weight="900" fill="#111827">8</text>
+  <text x="382" y="372" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="600" fill="#3b82f6">↑ Reached</text>
+
+  <!-- Feature list -->
+  <rect x="64" y="400" width="9" height="9" rx="2.5" fill="#f97316"/>
+  <text x="82" y="411" font-family="system-ui,-apple-system,sans-serif" font-size="15.5" fill="#374151" font-weight="500">Custom branded short links</text>
+
+  <rect x="64" y="432" width="9" height="9" rx="2.5" fill="#f97316"/>
+  <text x="82" y="443" font-family="system-ui,-apple-system,sans-serif" font-size="15.5" fill="#374151" font-weight="500">Device, location &amp; browser analytics</text>
+
+  <rect x="64" y="464" width="9" height="9" rx="2.5" fill="#f97316"/>
+  <text x="82" y="475" font-family="system-ui,-apple-system,sans-serif" font-size="15.5" fill="#374151" font-weight="500">QR code for every link</text>
+
+  <!-- URL pill at bottom -->
+  <rect x="64" y="500" width="240" height="38" rx="10" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1.5"/>
+  <text x="184" y="524" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#6b7280" text-anchor="middle">links.arisewebx.com</text>
+
+  <!-- ══════════ RIGHT VISUAL ══════════ -->
+
+  <!-- Outer card -->
+  <rect x="660" y="48" width="492" height="542" rx="24" fill="white" stroke="#f3f4f6" stroke-width="1.5" filter="url(#cardShadow)"/>
+
+  <!-- Card top bar -->
+  <rect x="660" y="48" width="492" height="50" rx="24" fill="#fafafa"/>
+  <rect x="660" y="76" width="492" height="22" fill="#fafafa"/>
+  <rect x="660" y="96" width="492" height="2" fill="#f3f4f6"/>
+  <circle cx="694" cy="73" r="6" fill="#fca5a5"/>
+  <circle cx="714" cy="73" r="6" fill="#fcd34d"/>
+  <circle cx="734" cy="73" r="6" fill="#86efac"/>
+  <text x="906" y="78" font-family="system-ui,-apple-system,sans-serif" font-size="12" fill="#d1d5db" text-anchor="middle">links.arisewebx.com</text>
+
+  <!-- ── URL Transform Section ── -->
+  <text x="682" y="128" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="700" fill="#d1d5db" letter-spacing="1.5">PASTE YOUR LINK</text>
+
+  <!-- Long URL input -->
+  <rect x="682" y="140" width="448" height="52" rx="12" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1.5"/>
+  <!-- chain icon circles -->
+  <circle cx="706" cy="166" r="8" stroke="#e5e7eb" stroke-width="2" fill="none"/>
+  <circle cx="718" cy="166" r="8" stroke="#e5e7eb" stroke-width="2" fill="none"/>
+  <rect x="710" y="163" width="8" height="6" fill="#f9fafb"/>
+  <text x="734" y="171" font-family="ui-monospace,monospace" font-size="12.5" fill="#9ca3af">your-very-long-website.com/path/to/page</text>
+
+  <!-- Orange arrow + label -->
+  <rect x="682" y="206" width="448" height="48" rx="12" fill="url(#btnGrad)"/>
+  <text x="906" y="235" font-family="system-ui,-apple-system,sans-serif" font-size="15" font-weight="700" fill="white" text-anchor="middle">Create link →</text>
+
+  <!-- Result -->
+  <rect x="682" y="268" width="448" height="52" rx="12" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+  <!-- green dot -->
+  <circle cx="706" cy="294" r="6" fill="#22c55e"/>
+  <text x="724" y="299" font-family="ui-monospace,monospace" font-size="15" font-weight="700" fill="#f97316">links.arisewebx.com/myblog</text>
+  <!-- copy pill -->
+  <rect x="1058" y="278" width="62" height="32" rx="8" fill="#f97316" opacity="0.12"/>
+  <text x="1089" y="298" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#f97316" text-anchor="middle">Copy</text>
+
+  <!-- ── Feature cards ── -->
+  <text x="682" y="348" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="700" fill="#d1d5db" letter-spacing="1.5">WHAT YOU GET</text>
+
+  <!-- Card 1: Analytics -->
+  <rect x="682" y="360" width="136" height="120" rx="14" fill="#f9fafb" stroke="#f3f4f6" stroke-width="1"/>
+  <!-- bar chart icon — 3 bars -->
+  <rect x="702" y="412" width="12" height="20" rx="3" fill="#fed7aa"/>
+  <rect x="718" y="402" width="12" height="30" rx="3" fill="#fb923c"/>
+  <rect x="734" y="394" width="12" height="38" rx="3" fill="#f97316"/>
+  <text x="750" y="390" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#9ca3af" text-anchor="end">Analytics</text>
+  <text x="700" y="458" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#111827">Real-time</text>
+  <text x="700" y="472" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#111827">Clicks</text>
+
+  <!-- Card 2: Location -->
+  <rect x="828" y="360" width="136" height="120" rx="14" fill="#f9fafb" stroke="#f3f4f6" stroke-width="1"/>
+  <!-- location pin (circle + dot) -->
+  <circle cx="878" cy="402" r="16" fill="#fee2e2" />
+  <circle cx="878" cy="402" r="8" fill="#f97316"/>
+  <circle cx="878" cy="402" r="3" fill="white"/>
+  <rect x="875" y="416" width="6" height="10" rx="3" fill="#f97316"/>
+  <text x="846" y="458" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#111827">Location</text>
+  <text x="846" y="472" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#111827">Insights</text>
+
+  <!-- Card 3: QR -->
+  <rect x="974" y="360" width="156" height="120" rx="14" fill="#f9fafb" stroke="#f3f4f6" stroke-width="1"/>
+  <!-- QR code shape (stylized squares) -->
+  <rect x="994" y="384" width="14" height="14" rx="3" fill="#f97316"/>
+  <rect x="1010" y="384" width="6" height="6" rx="1.5" fill="#f97316" opacity="0.5"/>
+  <rect x="1018" y="384" width="6" height="6" rx="1.5" fill="#f97316" opacity="0.3"/>
+  <rect x="994" y="400" width="6" height="6" rx="1.5" fill="#f97316" opacity="0.5"/>
+  <rect x="1002" y="400" width="6" height="6" rx="1.5" fill="#f97316" opacity="0.8"/>
+  <rect x="1010" y="400" width="14" height="14" rx="3" fill="#f97316"/>
+  <rect x="994" y="408" width="6" height="6" rx="1.5" fill="#f97316" opacity="0.4"/>
+  <rect x="1018" y="408" width="6" height="6" rx="1.5" fill="#f97316" opacity="0.6"/>
+  <text x="992" y="458" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#111827">QR Code</text>
+  <text x="992" y="472" font-family="system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#111827">Generator</text>
+
+  <!-- ── Device bar ── -->
+  <rect x="682" y="496" width="448" height="80" rx="14" fill="#f9fafb" stroke="#f3f4f6" stroke-width="1"/>
+  <text x="700" y="518" font-family="system-ui,-apple-system,sans-serif" font-size="10" font-weight="700" fill="#d1d5db" letter-spacing="1">DEVICE BREAKDOWN</text>
+  <!-- Progress track -->
+  <rect x="700" y="530" width="412" height="10" rx="5" fill="#e5e7eb"/>
+  <!-- Mobile orange -->
+  <rect x="700" y="530" width="260" height="10" rx="5" fill="#f97316"/>
+  <!-- Desktop blue -->
+  <rect x="960" y="530" width="90" height="10" rx="5" fill="#60a5fa"/>
+  <!-- Tablet green -->
+  <rect x="1050" y="530" width="62" height="10" fill="#34d399"/>
+  <rect x="1098" y="530" width="14" height="10" rx="0,5,5,0" fill="#34d399"/>
+  <!-- Labels -->
+  <circle cx="708" cy="558" r="4" fill="#f97316"/>
+  <text x="718" y="562" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">Mobile</text>
+  <circle cx="790" cy="558" r="4" fill="#60a5fa"/>
+  <text x="800" y="562" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">Desktop</text>
+  <circle cx="876" cy="558" r="4" fill="#34d399"/>
+  <text x="886" y="562" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#6b7280">Tablet</text>
+</svg>
