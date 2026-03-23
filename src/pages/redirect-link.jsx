@@ -7,12 +7,7 @@ import CubeLoader from "@/components/cube-loader";
 
 const RedirectLink = () => {
   const {id} = useParams();
-
   const {loading, data, fn} = useFetch(getLongUrl, id);
-  const {fn: fnStats} = useFetch(storeClicks, {
-    id: data?.id,
-    originalUrl: data?.original_url,
-  });
 
   useEffect(() => {
     fn();
@@ -20,12 +15,13 @@ const RedirectLink = () => {
 
   useEffect(() => {
     if (!loading && data) {
-      // Fire analytics in background — don't wait for it
-      fnStats();
-      // Redirect immediately
-      window.location.href = data.original_url;
+      // Let storeClicks wait for completion and redirect automatically
+      storeClicks({
+        id: data.id,
+        originalUrl: data.original_url,
+      });
     }
-  }, [loading]);
+  }, [loading, data]);
 
   return <CubeLoader />;
 };

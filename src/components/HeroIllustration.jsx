@@ -12,7 +12,7 @@ const HeroIllustration = () => (
         <span className="w-3 h-3 rounded-full bg-yellow-400 opacity-80" />
         <span className="w-3 h-3 rounded-full bg-green-400 opacity-80" />
         <div className="flex-1 mx-4 bg-white border border-gray-200 rounded-lg px-4 py-1.5 text-[11px] text-gray-400 font-mono text-center">
-          links.arisewebx.com/dashboard
+          {new URL(import.meta.env.VITE_APP_URL).host}/dashboard
         </div>
       </div>
 
@@ -31,7 +31,7 @@ const HeroIllustration = () => (
         {/* Result link */}
         <div className="flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-lg px-3 py-2.5">
           <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
-          <span className="text-xs font-mono text-orange-500 font-semibold">links.arisewebx.com/myblog</span>
+          <span className="text-xs font-mono text-orange-500 font-semibold">{new URL(import.meta.env.VITE_APP_URL).host}/myblog</span>
           <span className="ml-auto text-xs text-gray-400 bg-white border border-gray-200 rounded px-2 py-0.5">Copy</span>
         </div>
 
@@ -91,7 +91,7 @@ const HeroIllustration = () => (
           </div>
           <span className="text-xs font-semibold text-gray-700">AriseLinkX</span>
         </div>
-        <span className="text-[10px] text-gray-400 font-medium">links.arisewebx.com</span>
+        <span className="text-[10px] text-gray-400 font-medium">{new URL(import.meta.env.VITE_APP_URL).host}</span>
       </div>
 
       {/* Tablet home bar */}
