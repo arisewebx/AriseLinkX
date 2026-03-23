@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, AlertTriangle } from 'lucide-react';
 import { UrlState } from '@/context';
-import CubeLoader from './cube-loader';
+import CubeLoader from '@/components/cube-loader';
 
 const RequireAdmin = ({ children }) => {
   const navigate = useNavigate();
