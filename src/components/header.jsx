@@ -46,10 +46,8 @@ const Header = () => {
       <nav className="py-3 px-4 sm:px-6 flex justify-between items-center bg-white border-b border-gray-200 sticky top-0 z-50">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-            <Link2 className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-lg font-bold text-gray-900">AriseLinkX</span>
+          <img src="/icon.png" alt="AriseLinkX" className="w-10 h-10 rounded-lg object-contain scale-110" />
+          <span className="text-xl font-bold text-gray-900 tracking-tight">AriseLinkX</span>
         </Link>
 
         {/* Desktop user section */}
@@ -166,10 +164,8 @@ const Header = () => {
             {/* Panel header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-orange-500 rounded-lg flex items-center justify-center">
-                  <Link2 className="w-3.5 h-3.5 text-white" />
-                </div>
-                <span className="text-base font-bold text-gray-900">AriseLinkX</span>
+                <img src="/icon.png" alt="AriseLinkX" className="w-9 h-9 rounded-lg object-contain scale-110" />
+                <span className="text-lg font-bold text-gray-900 tracking-tight">AriseLinkX</span>
               </div>
               <button
                 onClick={() => setMobileOpen(false)}

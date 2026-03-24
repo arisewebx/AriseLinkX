@@ -22,10 +22,8 @@ const AppLayout = () => {
       <footer className="bg-white border-t border-gray-200 py-6 mt-12">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-orange-500 rounded flex items-center justify-center">
-              <Link2 className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="text-sm font-semibold text-gray-900">AriseLinkX</span>
+            <img src="/icon.png" alt="AriseLinkX" className="w-8 h-8 rounded object-contain scale-110" />
+            <span className="text-base font-semibold text-gray-900">AriseLinkX</span>
           </div>
 
           <p className="text-sm text-gray-500">
