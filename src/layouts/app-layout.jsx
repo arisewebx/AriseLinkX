@@ -31,12 +31,12 @@ const AppLayout = () => {
           <p className="text-sm text-gray-500">
             Built by{' '}
             <a
-              href="https://karthickofficial.netlify.app"
+              href="https://arisewebx.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-orange-500 hover:text-orange-600 font-medium"
             >
-              Karthick
+              ArisewebX
             </a>
             {' '}· © {new Date().getFullYear()} All rights reserved
           </p>
