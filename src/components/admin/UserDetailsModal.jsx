@@ -2889,7 +2889,8 @@ const UserDetailsModal = ({ isOpen, onClose, userId, onUserUpdate }) => {
                     ) : (
                       <>
                         {urls.slice(0, 10).map((url) => {
-                          const shortLink = `${window.location.origin}/${url.short_url}`;
+                          const displayLink = url.custom_url ? url.custom_url : url.short_url;
+                          const shortLink = `${window.location.origin}/${displayLink}`;
                           return (
                             <div key={url.id} className="bg-gray-50 border border-gray-100 rounded-lg p-3">
                               <div className="flex items-start justify-between gap-3">

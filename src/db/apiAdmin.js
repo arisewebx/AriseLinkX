@@ -26,13 +26,13 @@ export async function getAllUsers() {
     const usersWithStats = await Promise.all(
       users.map(async (user) => {
         // Get user's links count
-        const { count: linksCount } = await supabase
+        const { count: linksCount } = await supabaseAdmin
           .from('urls')
           .select('*', { count: 'exact', head: true })
           .eq('user_id', user.id);
         
         // Get user's total clicks
-        const { data: userUrls } = await supabase
+        const { data: userUrls } = await supabaseAdmin
           .from('urls')
           .select('id')
           .eq('user_id', user.id);
@@ -40,7 +40,7 @@ export async function getAllUsers() {
         let totalClicks = 0;
         if (userUrls && userUrls.length > 0) {
           const urlIds = userUrls.map(url => url.id);
-          const { count: clicksCount } = await supabase
+          const { count: clicksCount } = await supabaseAdmin
             .from('clicks')
             .select('*', { count: 'exact', head: true })
             .in('url_id', urlIds);
@@ -87,7 +87,7 @@ export async function getUserDetails(userId) {
     if (error) throw new Error(error.message);
     
     // Get user's links with click counts
-    const { data: userUrls, error: urlsError } = await supabase
+    const { data: userUrls, error: urlsError } = await supabaseAdmin
       .from('urls')
       .select(`
         *,
@@ -104,7 +104,7 @@ export async function getUserDetails(userId) {
     
     if (userUrls && userUrls.length > 0) {
       const urlIds = userUrls.map(url => url.id);
-      const { data: clicks, error: clicksError } = await supabase
+      const { data: clicks, error: clicksError } = await supabaseAdmin
         .from('clicks')
         .select('*')
         .in('url_id', urlIds)
@@ -540,7 +540,7 @@ export async function deleteUserLink(linkId) {
 // Get user activity/clicks data
 export async function getUserActivity(userId, days = 30) {
   try {
-    const { data: userUrls } = await supabase
+    const { data: userUrls } = await supabaseAdmin
       .from('urls')
       .select('id')
       .eq('user_id', userId);
@@ -553,7 +553,7 @@ export async function getUserActivity(userId, days = 30) {
     const dateLimit = new Date();
     dateLimit.setDate(dateLimit.getDate() - days);
     
-    const { data: clicks, error } = await supabase
+    const { data: clicks, error } = await supabaseAdmin
       .from('clicks')
       .select('created_at, country, device, city, timezone')
       .in('url_id', urlIds)

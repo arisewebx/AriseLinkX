@@ -3,7 +3,7 @@ import ClicksChart from "@/components/clicks-chart";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {UrlState} from "@/context";
-import {getClicksForUrl, validateLocationAccuracy} from "@/db/apiClicks";
+import {getClicksForUrl, validateLocationAccuracy, deleteClick} from "@/db/apiClicks";
 import {deleteUrl, getUrl} from "@/db/apiUrls";
 import useFetch from "@/hooks/use-fetch";
 import {Copy, Download, LinkIcon, Trash, ExternalLink, Calendar, BarChart3, MousePointer, QrCode, ArrowLeft, Check, Share2, MessageCircle, Mail, Twitter, Facebook} from "lucide-react";
@@ -14,6 +14,8 @@ import {BarLoader, BeatLoader} from "react-spinners";
 const LinkPage = () => {
   const [showCopySuccess, setShowCopySuccess] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [deletingClickId, setDeletingClickId] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   const downloadImage = async () => {
     try {
@@ -169,6 +171,32 @@ const LinkPage = () => {
     link = url?.custom_url ? url?.custom_url : url.short_url;
   }
 
+  const confirmDeleteClick = (clickId) => {
+    if (!clickId) {
+      alert("Error: Cannot delete this click (No ID found).");
+      return;
+    }
+    setDeleteConfirmId(clickId);
+  };
+
+  const executeDeleteClick = async () => {
+    const clickId = deleteConfirmId;
+    if (!clickId) return;
+    
+    setDeleteConfirmId(null);
+    setDeletingClickId(clickId);
+    
+    try {
+      await deleteClick(clickId);
+      await fnStats(); // refresh stats immediately
+    } catch (error) {
+      console.error("Failed to delete click:", error);
+      alert("Failed to delete click. Please try again.");
+    } finally {
+      setDeletingClickId(null);
+    }
+  };
+
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(`${window.location.origin}/${link}`);
@@ -267,6 +295,38 @@ const LinkPage = () => {
             <div className="mt-3 pt-3 border-t border-gray-100">
               <Button onClick={() => { copyToClipboard(); setShowShareMenu(false); }} className="w-full bg-orange-500 hover:bg-orange-600 text-white h-10">
                 <Copy className="w-4 h-4 mr-2" />Copy link
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-xl p-6 max-w-sm w-full animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                <Trash className="w-5 h-5 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Delete Click</h3>
+            </div>
+            <p className="text-sm text-gray-500 mb-6">
+              Are you sure you want to delete this click record? This action cannot be undone and will permanently remove it from your analytics.
+            </p>
+            <div className="flex items-center gap-3 justify-end">
+              <Button 
+                variant="outline" 
+                onClick={() => setDeleteConfirmId(null)}
+                className="text-gray-700 bg-white border-gray-300 hover:bg-gray-50 flex-1"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={executeDeleteClick}
+                className="bg-red-600 hover:bg-red-700 text-white flex-1 border-0"
+              >
+                Delete
               </Button>
             </div>
           </div>
@@ -395,9 +455,19 @@ const LinkPage = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="text-right shrink-0 ml-2">
-                      <p className="text-xs font-medium text-gray-700">{timeAgo}</p>
-                      <p className="text-xs text-gray-400">{new Date(click.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                    <div className="flex items-center gap-3 shrink-0 ml-2">
+                      <div className="text-right">
+                        <p className="text-xs font-medium text-gray-700">{timeAgo}</p>
+                        <p className="text-xs text-gray-400">{new Date(click.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                      </div>
+                      <button 
+                        onClick={() => confirmDeleteClick(click.id)}
+                        disabled={deletingClickId === click.id}
+                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors disabled:opacity-50"
+                        title="Delete click record"
+                      >
+                        {deletingClickId === click.id ? <BeatLoader size={4} color="#ef4444" /> : <Trash className="w-3.5 h-3.5" />}
+                      </button>
                     </div>
                   </div>
                 );

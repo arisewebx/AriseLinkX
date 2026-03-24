@@ -121,7 +121,7 @@ const getCachedLocation = async () => {
 };
 
 // Main click tracking function - PRODUCTION READY
-export const storeClicks = async ({ id, originalUrl }) => {
+export const storeClicks = async ({ id, originalUrl, lat, lng }) => {
   const startTime = Date.now();
   console.log('🔗 Processing click for URL ID:', id);
   console.log('🌐 Site URL:', window.location.origin);
@@ -138,9 +138,37 @@ export const storeClicks = async ({ id, originalUrl }) => {
     const userAgent = navigator.userAgent || 'unknown';
     console.log('🕐 System info:', { timezone, language });
 
-    // Get location with HTTPS fallback
-    const location = await getCachedLocation();
-    console.log('📍 Location result:', location);
+    let location;
+    if (lat && lng) {
+      try {
+        console.log('📍 Resolving precise GPS coordinates...', lat, lng);
+        const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
+        
+        if (!geoRes.ok) throw new Error("Reverse geocoding API failed");
+        
+        const geo = await geoRes.json();
+        
+        const city = geo.city || geo.locality || 'Unknown';
+        const region = geo.principalSubdivision || geo.adminName1 || 'Unknown';
+        const country = geo.countryName || 'Unknown';
+        
+        let ip = "Unknown";
+        try {
+          const ipRes = await fetch("https://api.ipify.org?format=json");
+          const ipData = await ipRes.json();
+          ip = ipData.ip;
+        } catch(e) {}
+
+        location = { city, region, country, ip, source: 'gps' };
+        console.log('✅ GPS Location resolved:', location);
+      } catch (e) {
+        console.error('❌ Reverse geocoding failed, falling back to IP', e);
+        location = await getCachedLocation();
+      }
+    } else {
+      location = await getCachedLocation();
+    }
+    console.log('📍 Final Location context:', location);
     
     // Prepare data for database
     const clickData = {
@@ -256,6 +284,22 @@ export async function getClicksForUrl(url_id) {
   } catch (error) {
     console.error("Network error fetching URL clicks:", error);
     throw error;
+  }
+}
+
+// Delete a specific click record
+export async function deleteClick(clickId) {
+  try {
+    const { error } = await supabase
+      .from("clicks")
+      .delete()
+      .eq("id", clickId);
+
+    if (error) throw error;
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting click:", error);
+    throw new Error("Failed to delete click record");
   }
 }
 

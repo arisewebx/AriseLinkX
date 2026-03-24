@@ -34,6 +34,7 @@ const CreateLink = () => {
     title: "",
     longUrl: longLink ? longLink : "",
     customUrl: "",
+    high_accuracy: false,
   });
   const [shortUrl, setShortUrl] = useState("");
 
@@ -187,6 +188,22 @@ const CreateLink = () => {
                   className="border-gray-200 text-gray-900 placeholder-gray-400 focus-visible:ring-orange-400 h-9 text-sm"
                 />
               </div>
+            </div>
+
+            <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-gray-50/50 mt-2">
+              <div>
+                <label className="text-xs font-medium text-gray-900 block mb-0.5">High Accuracy Tracking</label>
+                <p className="text-[11px] text-gray-500">Ask visitors for precise GPS location before redirecting</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                <input 
+                  type="checkbox" 
+                  className="sr-only peer"
+                  checked={formValues.high_accuracy}
+                  onChange={(e) => setFormValues({...formValues, high_accuracy: e.target.checked})}
+                />
+                <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange-500"></div>
+              </label>
             </div>
           </div>
 

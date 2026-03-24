@@ -33,7 +33,7 @@ export async function getUrl({id, user_id}) {
 export async function getLongUrl(id) {
   let {data: shortLinkData, error: shortLinkError} = await supabase
     .from("urls")
-    .select("id, original_url")
+    .select("id, original_url, track_location")
     .or(`short_url.eq.${id},custom_url.eq.${id}`)
     .single();
 
@@ -45,7 +45,7 @@ export async function getLongUrl(id) {
   return shortLinkData;
 }
 
-export async function createUrl({title, longUrl, customUrl, user_id}, qrcode) {
+export async function createUrl({title, longUrl, customUrl, user_id, high_accuracy}, qrcode) {
   const short_url = Math.random().toString(36).substr(2, 6);
   const fileName = `qr-${short_url}`;
 
@@ -67,6 +67,7 @@ export async function createUrl({title, longUrl, customUrl, user_id}, qrcode) {
         custom_url: customUrl || short_url,
         short_url,
         qr,
+        track_location: high_accuracy ? true : false,
       },
     ])
     .select();

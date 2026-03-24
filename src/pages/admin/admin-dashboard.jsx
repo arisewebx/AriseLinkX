@@ -52,7 +52,7 @@ const AdminDashboard = () => {
   const { loading: urlsLoading, data: allUrls, fn: fnUrls } = useFetch(getAllUrls);
   
   // Fetch all clicks for platform stats
-  const { loading: clicksLoading, data: allClicks, fn: fnClicks } = useFetch(getClicksForUrls);
+  const { loading: clicksLoading, data: allClicks, fn: fnClicks } = useFetch(getClicksForUrls, allUrls?.map(url => url.id) || []);
 
   useEffect(() => {
     fnUsers();
@@ -61,8 +61,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (allUrls?.length) {
-      const urlIds = allUrls.map(url => url.id);
-      fnClicks(urlIds);
+      fnClicks();
     }
   }, [allUrls]);
 
