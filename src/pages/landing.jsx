@@ -176,7 +176,7 @@ const LandingPage = () => {
       </section>
 
       {/* ── How it works ── */}
-      <section className="max-w-5xl mx-auto px-4 py-20">
+      <section id="how-it-works" className="max-w-5xl mx-auto px-4 py-20">
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-100 mb-4">
             <span className="text-xs text-orange-600 font-bold uppercase tracking-widest">How it works</span>
@@ -377,6 +377,7 @@ const LandingPage = () => {
 
       {/* ── FAQ ── */}
       <section
+        id="faq"
         className="py-20 border-t border-gray-100"
         style={{
           background: "radial-gradient(ellipse 80% 60% at 50% 100%, #fff7ed 0%, #ffffff 60%)",

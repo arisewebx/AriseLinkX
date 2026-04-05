@@ -41,6 +41,12 @@ const Header = () => {
     { to: "/settings", label: "Settings", icon: Settings },
   ]
 
+  const publicLinks = [
+    { to: "/#how-it-works", label: "How it works" },
+    { to: "/#faq", label: "FAQ" },
+    { to: "/blog", label: "Blog" },
+  ]
+
   return (
     <>
       <nav className="py-3 px-4 sm:px-6 flex justify-between items-center bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -49,6 +55,19 @@ const Header = () => {
           <img src="/icon.png" alt="AriseLinkX" className="w-10 h-10 rounded-lg object-contain scale-110" />
           <span className="text-xl font-bold text-gray-900 tracking-tight">AriseLinkX</span>
         </Link>
+
+        {/* Desktop Public Navigation */}
+        <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+          {publicLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className="text-sm font-semibold text-gray-600 hover:text-orange-500 transition-colors"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
 
         {/* Desktop user section */}
         <div className="hidden md:flex items-center gap-3">
@@ -173,6 +192,24 @@ const Header = () => {
               >
                 <X className="w-4 h-4" />
               </button>
+            </div>
+
+            {/* Mobile Public Navigation */}
+            <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Exploring</p>
+              <div className="grid grid-cols-1 gap-2">
+                {publicLinks.map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-white border border-gray-100 text-sm font-semibold text-gray-700 hover:text-orange-500 hover:border-orange-100 transition-all shadow-sm"
+                  >
+                    {link.label}
+                    <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
+                  </Link>
+                ))}
+              </div>
             </div>
 
             {user ? (

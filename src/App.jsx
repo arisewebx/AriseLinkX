@@ -14,6 +14,8 @@ import AdminDashboard from "./pages/admin/admin-dashboard"
 import RequireAdmin from "./components/admin/require-admin"
 import BanCheckWrapper from "./components/admin/BanCheckWrapper"
 import ResetPassword from "./pages/reset-password"
+import Blog from "./pages/blog"
+import BlogDetail from "./pages/blog-detail"
 
 const router = createBrowserRouter([
   // Short URL redirect — no layout, no header
@@ -31,6 +33,14 @@ const router = createBrowserRouter([
       {
         path: "/auth",
         element: <Auth />,
+      },
+      {
+        path: "/blog",
+        element: <Blog />,
+      },
+      {
+        path: "/blog/:id",
+        element: <BlogDetail />,
       },
       {
         path: "/reset-password",
