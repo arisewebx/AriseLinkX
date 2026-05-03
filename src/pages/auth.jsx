@@ -15,6 +15,11 @@ function Auth() {
 
   useEffect(() => {
     if (isAuthenticated && !loading) {
+      // If landing here from a password reset link, redirect to reset page
+      if (window.location.hash.includes("type=recovery")) {
+        navigate("/reset-password");
+        return;
+      }
       navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
     }
   }, [isAuthenticated, loading]);

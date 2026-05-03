@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Accordion,
@@ -24,6 +24,12 @@ const LandingPage = () => {
     e.preventDefault();
     if (longUrl) navigate(`/auth?createNew=${longUrl}`);
   };
+
+  useEffect(() => {
+    if (window.location.hash.includes("type=recovery")) {
+      navigate("/reset-password");
+    }
+  }, []);
 
   return (
     <div className="bg-white overflow-x-hidden w-full">
